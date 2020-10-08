@@ -70,6 +70,14 @@ void Error_Handler(void);
 #define SWCLK_GPIO_Port GPIOA
 #define VCP_RX_Pin GPIO_PIN_15
 #define VCP_RX_GPIO_Port GPIOA
+#define GPIO_SW0_Pin GPIO_PIN_4
+#define GPIO_SW0_GPIO_Port GPIOB
+#define GPIO_SW1_Pin GPIO_PIN_5
+#define GPIO_SW1_GPIO_Port GPIOB
+#define GPIO_SW2_Pin GPIO_PIN_6
+#define GPIO_SW2_GPIO_Port GPIOB
+#define GPIO_SW3_Pin GPIO_PIN_7
+#define GPIO_SW3_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
