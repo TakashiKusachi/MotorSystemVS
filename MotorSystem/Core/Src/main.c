@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include<stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,6 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+extern void cpp_Init(void);
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -67,7 +68,25 @@ static void MX_ADC1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void printCanState(){
+	  auto can_state = HAL_CAN_GetState(&hcan);
+	  uint32_t can_error_state = HAL_CAN_GetError(&hcan);
+	  printf("CAN_STATE: ");
+	  switch(can_state){
+	  case HAL_CAN_STATE_RESET:
+		  printf("STATE_RESET\r\n");break;
+	  case HAL_CAN_STATE_READY:
+		  printf("STATE_READY\r\n");break;
+	  case HAL_CAN_STATE_LISTENING:
+		  printf("STATE_LISTENING\r\n");break;
+	  case HAL_CAN_STATE_SLEEP_PENDING:
+		  printf("STATE_SLEEP_PENDING\r\n");break;
+	  case HAL_CAN_STATE_SLEEP_ACTIVE:
+		  printf("STATE_SLEEP_ACTIVE\r\n");break;
+	  case HAL_CAN_STATE_ERROR:
+		  printf("STATE_ERROR[error code:%ld]\r\n",can_error_state);break;
+	  }
+}
 /* USER CODE END 0 */
 
 /**
@@ -77,6 +96,7 @@ static void MX_ADC1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+	int cont = 0;
 
   /* USER CODE END 1 */
 
@@ -104,7 +124,29 @@ int main(void)
   MX_TIM2_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
+  printCanState();
+  cpp_Init();
 
+  printf("CAN Start: ");
+  if(HAL_CAN_Start(&hcan) != HAL_OK){
+	  printf("Failure\r\n");
+	  Error_Handler();
+  }
+  printf("Done\r\n");
+
+  printf("ActivationNotification: ");
+  if(HAL_CAN_ActivateNotification(&hcan,CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK){
+	  printf("Failure\r\n");
+	  Error_Handler();
+  }
+  printf("Done\r\n");
+
+  CAN_TxHeaderTypeDef header;
+  header.StdId = 0x01;
+  header.IDE = CAN_ID_STD;
+  header.RTR = CAN_RTR_DATA;
+  header.DLC = 0;
+  header.TransmitGlobalTime = DISABLE;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -114,6 +156,20 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  uint32_t transmit_mailbox = 0;
+	  printf("[%d]: ",cont++);
+	  printCanState();
+	  if(HAL_CAN_AddTxMessage(&hcan,&header,(uint8_t*)"a",&transmit_mailbox) != HAL_OK){
+		  printf("Tx Failure[ErrorCode %lx]\r\n",(uint32_t)hcan.ErrorCode);
+		  printf("TxStatus: 0x%lx",(uint32_t)hcan.Instance->TSR);
+		  printCanState();
+		  Error_Handler();
+	  }
+	  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_1,GPIO_PIN_SET);
+	  HAL_Delay(125);
+	  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_1,GPIO_PIN_RESET);
+	  HAL_Delay(125);
+
   }
   /* USER CODE END 3 */
 }
@@ -136,7 +192,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL2;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -145,12 +201,12 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -243,16 +299,16 @@ static void MX_CAN_Init(void)
   /* USER CODE END CAN_Init 1 */
   hcan.Instance = CAN;
   hcan.Init.Prescaler = 16;
-  hcan.Init.Mode = CAN_MODE_NORMAL;
+  hcan.Init.Mode = CAN_MODE_SILENT_LOOPBACK;
   hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan.Init.TimeSeg1 = CAN_BS1_1TQ;
+  hcan.Init.TimeSeg1 = CAN_BS1_2TQ;
   hcan.Init.TimeSeg2 = CAN_BS2_1TQ;
   hcan.Init.TimeTriggeredMode = DISABLE;
   hcan.Init.AutoBusOff = DISABLE;
-  hcan.Init.AutoWakeUp = DISABLE;
+  hcan.Init.AutoWakeUp = ENABLE;
   hcan.Init.AutoRetransmission = DISABLE;
   hcan.Init.ReceiveFifoLocked = DISABLE;
-  hcan.Init.TransmitFifoPriority = DISABLE;
+  hcan.Init.TransmitFifoPriority = ENABLE;
   if (HAL_CAN_Init(&hcan) != HAL_OK)
   {
     Error_Handler();
@@ -441,6 +497,16 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PB1 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
   /*Configure GPIO pins : GPIO_SW0_Pin GPIO_SW1_Pin GPIO_SW2_Pin GPIO_SW3_Pin */
   GPIO_InitStruct.Pin = GPIO_SW0_Pin|GPIO_SW1_Pin|GPIO_SW2_Pin|GPIO_SW3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -461,6 +527,8 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
+	printf("Error Handler\r\n");
+	while(1);
 
   /* USER CODE END Error_Handler_Debug */
 }
