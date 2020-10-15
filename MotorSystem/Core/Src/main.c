@@ -68,25 +68,6 @@ static void MX_ADC1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void printCanState(){
-	  auto can_state = HAL_CAN_GetState(&hcan);
-	  uint32_t can_error_state = HAL_CAN_GetError(&hcan);
-	  printf("CAN_STATE: ");
-	  switch(can_state){
-	  case HAL_CAN_STATE_RESET:
-		  printf("STATE_RESET\r\n");break;
-	  case HAL_CAN_STATE_READY:
-		  printf("STATE_READY\r\n");break;
-	  case HAL_CAN_STATE_LISTENING:
-		  printf("STATE_LISTENING\r\n");break;
-	  case HAL_CAN_STATE_SLEEP_PENDING:
-		  printf("STATE_SLEEP_PENDING\r\n");break;
-	  case HAL_CAN_STATE_SLEEP_ACTIVE:
-		  printf("STATE_SLEEP_ACTIVE\r\n");break;
-	  case HAL_CAN_STATE_ERROR:
-		  printf("STATE_ERROR[error code:%ld]\r\n",can_error_state);break;
-	  }
-}
 /* USER CODE END 0 */
 
 /**
@@ -124,7 +105,6 @@ int main(void)
   MX_TIM2_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-  printCanState();
   cpp_Init();
 
   printf("CAN Start: ");
@@ -158,13 +138,6 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  uint32_t transmit_mailbox = 0;
 	  printf("[%d]: ",cont++);
-	  printCanState();
-	  if(HAL_CAN_AddTxMessage(&hcan,&header,(uint8_t*)"a",&transmit_mailbox) != HAL_OK){
-		  printf("Tx Failure[ErrorCode %lx]\r\n",(uint32_t)hcan.ErrorCode);
-		  printf("TxStatus: 0x%lx",(uint32_t)hcan.Instance->TSR);
-		  printCanState();
-		  Error_Handler();
-	  }
 	  HAL_GPIO_WritePin(GPIOB,GPIO_ON_LED_Pin,GPIO_PIN_SET);
 	  HAL_Delay(125);
 	  HAL_GPIO_WritePin(GPIOB,GPIO_ON_LED_Pin,GPIO_PIN_RESET);
