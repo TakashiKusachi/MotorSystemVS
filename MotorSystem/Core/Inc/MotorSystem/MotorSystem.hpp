@@ -8,6 +8,7 @@
 #ifndef INC_MOTORSYSTEM_MOTORSYSTEM_HPP_
 #define INC_MOTORSYSTEM_MOTORSYSTEM_HPP_
 
+#include "main.h"
 #include "motorSystem_util.hpp"
 #include "pid/PID.hpp"
 
@@ -20,11 +21,17 @@ namespace MotorSystem{
 	public:
 		/**
 		 * set Duty [%].
+		 *
+		 * Args:
+		 * 		duty (float): duty
 		 */
 		virtual void setDuty(float) = 0;
 
 		/**
 		 * get current [A].
+		 *
+		 *  Returns:
+		 *  	(float): current [A].
 		 */
 		virtual float getCurrent(void) = 0;
 
@@ -34,27 +41,40 @@ namespace MotorSystem{
 		virtual float getSpeed(void) = 0;
 	};
 
+	typedef enum{
+		NOT_INITIALIZE,
+		READY,
+	}MOTORSYSTEM_STATE;
+
 	class MotorSystem{
 		lowMotorSystem* low;
 
 		float duty;
 
-		float current; /** 目標速度 */
-		float speed; /** 目標スピード */
+		float current; /** 目標電流 [A] */
+		float speed; /** 目標スピード [rad/s] */
 
 		PID::PIDControler speedControler;
 
 		/**
 		 * internal parameters
 		 */
-		enum{
-			NOT_INITIALIZE,
-			READY,
-		}state;
+		MOTORSYSTEM_STATE state;
 
 	public:
 		MotorSystem();
+
+		/**
+		 * initialize
+		 */
 		returnState init(lowMotorSystem*);
+
+		/**
+		 * Change State method.
+		 *
+		 *
+		 */
+		void setState(MOTORSYSTEM_STATE state);
 
 		returnState setDuty(float);
 		float getDuty(void);
@@ -62,7 +82,6 @@ namespace MotorSystem{
 		void controlTick(void);
 
 	};
-
 
 	#define CHECK_LOWHANDLER(t) if( t->low == NULL) Error_Handler();
 }
