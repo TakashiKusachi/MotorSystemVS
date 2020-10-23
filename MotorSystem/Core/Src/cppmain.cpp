@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include "main.h"
+#include "cppmain.hpp"
 #include "stm32f3xx_hal.h"
 #include "MotorSystem/MotorSystem.hpp"
 
@@ -29,8 +30,10 @@ void __trigger(TIM_HandleTypeDef* htim);
 
 class lowMotorSystem: public MotorSystem::lowMotorSystem{
 	uint32_t befor_encoder_cont;
+	float speed;
 public:
 	lowMotorSystem(void){
+		this->speed = 0;
 		this->befor_encoder_cont = 0;
 	}
 
@@ -115,8 +118,8 @@ public:
 	}
 
 	void setDuty(float duty) override{
-		  //printf("duty:[%d]\r\n",(uint32_t)duty);
-		  htim1.Instance->CCR1 = (uint32_t)(duty * 10.0);
+		uint32_t period = __HAL_TIM_GET_AUTORELOAD(&htim1);
+		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,(uint32_t)(period * duty / 100.0));
 	}
 
 	float getCurrent(void) override{
@@ -124,11 +127,26 @@ public:
 	}
 
 	float getSpeed(void) override{
+		return this->speed;
+	}
 
+	float sendMessage(uint32_t sid,uint32_t rtr,uint32_t dlc,uint8_t* data) override{
+		uint32_t transmit_mailbox = 0;
+
+		CAN_TxHeaderTypeDef header;
+		header.StdId = sid;
+		header.IDE = CAN_ID_STD;
+		header.RTR = rtr;
+		header.DLC = dlc;
+		header.TransmitGlobalTime = DISABLE;
+
+		HAL_CAN_AddTxMessage(&hcan,&header,data,&transmit_mailbox);
 	}
 
 	void controlTick(void) {
-		//printf("htim2: [%d]\r\n",htim2.Instance->CNT);
+		//printf("htim2: [%ld]\r\n",htim2.Instance->CNT);
+		this->speed = (float)1.0 * (int32_t)__HAL_TIM_GET_COUNTER(&htim2);
+		__HAL_TIM_SET_COUNTER(&htim2,0);
 
 	}
 };
@@ -138,6 +156,8 @@ MotorSystem::MotorSystem ms;
 
 extern "C"{
 	void cpp_Init(void);
+	void logoutput(void);
+	void test_send(void);
 }
 
 void cpp_Init(void){
@@ -146,6 +166,19 @@ void cpp_Init(void){
 	lms.start();
 }
 
+void logoutput(void){
+	printf("duty: [%5.4e], speed: [%5.4e]\r\n",ms.getDuty(),ms.getSpeed());
+}
+
+void test_send(void){
+	float duty = 0.5;
+	lms.sendMessage(MAKE_CMD(SET_DUTY,0x00), 0, 4, (uint8_t*)&duty);
+}
+
+
+/**
+ * callback funtions
+ */
 void __motorsystem_tim17_tick(TIM_HandleTypeDef* htim){
 	//printf("test callback\r\n");
 	lms.controlTick();
@@ -156,6 +189,36 @@ void __motorsystem_can_recive(CAN_HandleTypeDef* hcan){
 	CAN_RxHeaderTypeDef header;
 	uint8_t data[8];
 	HAL_CAN_GetRxMessage(hcan,CAN_RX_FIFO0,&header,data);
+	union{
+		struct{
+			float data;
+			unsigned char _[4];
+		}F;
+		unsigned char data[8];
+	}convert;
+
+	if (header.RTR == 1){
+		switch(GET_CMD(header.StdId)){
+		case GET_DUTY:
+			convert.F.data = ms.getSpeed();
+			lms.sendMessage(header.StdId, 1, 4, (uint8_t*)&convert);
+			break;
+		default:
+			Error_Handler();
+			break;
+		}
+	} else { //if RTR == 0
+		switch(GET_CMD(header.StdId)){
+		case SET_DUTY:
+			printf("test set duty: %f\r\n",*(float*)data);
+			//ms.setDuty(velocity);
+			break;
+		default:
+			Error_Handler();
+			break;
+		}
+	}
+
 
 	HAL_GPIO_TogglePin(GPIO_DIR_GPIO_Port,GPIO_DIR_Pin);
 }
@@ -175,5 +238,5 @@ void __makeFilterConfig(CAN_FilterTypeDef* sFilterConfig){
 
 
 void __trigger(TIM_HandleTypeDef* htim){
-	printf("TEST\r\n");
+	//printf("TEST\r\n");
 }

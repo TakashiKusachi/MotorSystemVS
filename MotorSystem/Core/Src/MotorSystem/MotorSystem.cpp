@@ -80,6 +80,11 @@ namespace MotorSystem
 		return this->duty;
 	}
 
+	float MotorSystem::getSpeed(void){
+		CHECK_LOWHANDLER(this);
+		return this->low->getSpeed();
+	}
+
 	void MotorSystem::controlTick(void){
 		static int cnt = 0;
 		CHECK_LOWHANDLER(this);
@@ -90,6 +95,6 @@ namespace MotorSystem
 		float targetSpeed = this->speed;
 
 		float cduty = this->speedControler.control(targetSpeed, nowSpeed);
-		this->setDuty(100.0 * std::sin(cnt++ / 1000.0 * 2.0 * 3.141592));
+		this->setDuty(100.0 * std::sin(cnt++ / 100.0 * 2.0 * 3.141592));
 	}
 }

@@ -39,6 +39,11 @@ namespace MotorSystem{
 		 * get speed [rad. / s].
 		 */
 		virtual float getSpeed(void) = 0;
+
+		/**
+		 *
+		 */
+		virtual float sendMessage(uint32_t sid,uint32_t rtr,uint32_t dlc,uint8_t* data) = 0;
 	};
 
 	typedef enum{
@@ -78,6 +83,8 @@ namespace MotorSystem{
 
 		returnState setDuty(float);
 		float getDuty(void);
+
+		float getSpeed(void);
 
 		void controlTick(void);
 

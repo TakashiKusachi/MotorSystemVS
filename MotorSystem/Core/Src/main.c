@@ -33,6 +33,8 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 extern void cpp_Init(void);
+extern void logoutput(void);
+extern void test_send(void);
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -113,13 +115,6 @@ int main(void)
   /* USER CODE BEGIN 2 */
   cpp_Init();
 
-  CAN_TxHeaderTypeDef header;
-  header.StdId = 0x01;
-  header.IDE = CAN_ID_STD;
-  header.RTR = CAN_RTR_DATA;
-  header.DLC = 0;
-  header.TransmitGlobalTime = DISABLE;
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -129,14 +124,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  uint32_t transmit_mailbox = 0;
-	  //printf("[%d]: ",cont++);
-	  HAL_GPIO_WritePin(GPIOB,GPIO_ON_LED_Pin,GPIO_PIN_SET);
 	  HAL_Delay(125);
-	  HAL_GPIO_WritePin(GPIOB,GPIO_ON_LED_Pin,GPIO_PIN_RESET);
-	  HAL_Delay(125);
+	  HAL_GPIO_TogglePin(GPIOB,GPIO_ON_LED_Pin);
 
-	  HAL_CAN_AddTxMessage(&hcan,&header,"0",&transmit_mailbox);
+	  test_send();
+	  //logoutput();
 
   }
   /* USER CODE END 3 */
@@ -310,7 +302,7 @@ static void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 0;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 1000;
+  htim1.Init.Period = 2133;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -492,9 +484,9 @@ static void MX_TIM17_Init(void)
 
   /* USER CODE END TIM17_Init 1 */
   htim17.Instance = TIM17;
-  htim17.Init.Prescaler = 64;
+  htim17.Init.Prescaler = 32;
   htim17.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim17.Init.Period = 65535;
+  htim17.Init.Period = 20000;
   htim17.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim17.Init.RepetitionCounter = 0;
   htim17.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
