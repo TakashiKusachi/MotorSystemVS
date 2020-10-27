@@ -3,6 +3,9 @@
  *
  *  Created on: Oct 11, 2020
  *      Author: 嵩
+ *
+ *  This file define control class and methods with c++.
+ *
  */
 
 #include <stdio.h>
@@ -13,7 +16,7 @@
 
 extern "C"{
 /*
- * from main.c
+ * external handler from main.c
  */
 	CAN_HandleTypeDef hcan;
 	TIM_HandleTypeDef htim1;
@@ -22,12 +25,18 @@ extern "C"{
 	TIM_HandleTypeDef htim17;
 }
 
+/**
+ * Forward declaration
+ */
 void __motorsystem_tim17_tick(TIM_HandleTypeDef* htim);
 void __motorsystem_can_recive(CAN_HandleTypeDef* hcan);
 void __makeFilterConfig(CAN_FilterTypeDef* sFilterConfig);
 
 void __trigger(TIM_HandleTypeDef* htim);
 
+/**
+ * hardware control class for motor system.
+ */
 class lowMotorSystem: public MotorSystem::lowMotorSystem{
 	uint32_t befor_encoder_cont;
 	float speed;
@@ -40,6 +49,9 @@ public:
 	/**
 	 *  Initialize funtion.
 	 *
+	 *  Initalize of the hardware registar and midl
+	 *  1. Setting of callback functions.
+	 *
 	 *  Args:
 	 *  	tick_htim (TIM_HandleTypeDef*): TIM Handler of motorsystem control tick generater. use PERIOD_ELAPSED
 	 */
@@ -51,6 +63,9 @@ public:
 		HAL_CAN_RegisterCallback(&hcan,HAL_CAN_RX_FIFO0_MSG_PENDING_CB_ID,__motorsystem_can_recive);
 	}
 
+	/**
+	 * Starting modules.
+	 */
 	void start(){
 		CAN_FilterTypeDef sFilterConfig;
 
@@ -130,7 +145,7 @@ public:
 		return this->speed;
 	}
 
-	float sendMessage(uint32_t sid,uint32_t rtr,uint32_t dlc,uint8_t* data) override{
+	void sendMessage(uint32_t sid,uint32_t rtr,uint32_t dlc,uint8_t* data) override{
 		uint32_t transmit_mailbox = 0;
 
 		CAN_TxHeaderTypeDef header;
@@ -157,21 +172,25 @@ MotorSystem::MotorSystem ms;
 extern "C"{
 	void cpp_Init(void);
 	void logoutput(void);
-	void test_send(void);
+	void test_send(float);
 }
 
+/**
+ * main function with c++ source code (class).
+ */
 void cpp_Init(void){
 	lms.init(&htim17);
 	ms.init(&lms);
 	lms.start();
+
+	ms.setState(MotorSystem::MOTORSYSTEM_STATE::DUTY);
 }
 
 void logoutput(void){
 	printf("duty: [%5.4e], speed: [%5.4e]\r\n",ms.getDuty(),ms.getSpeed());
 }
 
-void test_send(void){
-	float duty = 0.5;
+void test_send(float duty){
 	lms.sendMessage(MAKE_CMD(SET_DUTY,0x00), 0, 4, (uint8_t*)&duty);
 }
 
@@ -182,20 +201,22 @@ void test_send(void){
 void __motorsystem_tim17_tick(TIM_HandleTypeDef* htim){
 	//printf("test callback\r\n");
 	lms.controlTick();
-	ms.controlTick();
+	//ms.controlTick();
 }
 
 void __motorsystem_can_recive(CAN_HandleTypeDef* hcan){
 	CAN_RxHeaderTypeDef header;
 	uint8_t data[8];
 	HAL_CAN_GetRxMessage(hcan,CAN_RX_FIFO0,&header,data);
-	union{
+
+	typedef union{
 		struct{
 			float data;
 			unsigned char _[4];
 		}F;
 		unsigned char data[8];
-	}convert;
+	}ConverterType;
+	ConverterType convert;
 
 	if (header.RTR == 1){
 		switch(GET_CMD(header.StdId)){
@@ -210,8 +231,7 @@ void __motorsystem_can_recive(CAN_HandleTypeDef* hcan){
 	} else { //if RTR == 0
 		switch(GET_CMD(header.StdId)){
 		case SET_DUTY:
-			printf("test set duty: %f\r\n",*(float*)data);
-			//ms.setDuty(velocity);
+			ms.setDuty(((ConverterType*)&data)->F.data);
 			break;
 		default:
 			Error_Handler();

@@ -5,22 +5,24 @@
  *      Author: 嵩
  */
 
+#include "main.h"
 #include <stdio.h>
 #include <math.h>
 #include "./MotorSystem/MotorSystem.hpp"
 
-extern "C"{
-	void Error_Handler(void);
-}
-
 namespace MotorSystem
 {
-
+	/**
+	 * constructor
+	 */
 	MotorSystem::MotorSystem(void){
 		this->low = NULL;
-		this->state = NOT_INITIALIZE;
+		this->state = NOT_INITIALIZED;
 	}
 
+	/**
+	 * Initialize
+	 */
 	returnState MotorSystem::init(lowMotorSystem* low){
 		this->low = low;
 		this->duty = 0;
@@ -28,50 +30,80 @@ namespace MotorSystem
 		return RS_OK;
 	}
 
+	/**
+	 *
+	 */
 	void MotorSystem::setState(MOTORSYSTEM_STATE state){
 		MOTORSYSTEM_STATE current = this->state;
+		bool illegalStateChange = false;
+
 		switch(current){
 
-		case NOT_INITIALIZE:
+		case NOT_INITIALIZED:
 			switch(state){
 			case READY:
-				this->state = state;
 				break;
 			default:
-				/* Illegal chenge state
-				 *
-				 * NOT_INITIALIZE -> Any(not READY)
-				 */
-				Error_Handler();
+				illegalStateChange = True;
 			}
 			break;
 
 		case READY:
 			switch(state){
+			case DUTY:
+				break;
 			default:
-				/**
-				 * Illegal change state.
-				 */
-				Error_Handler();
+				illegalStateChange = True;
 			}
+			break;
+		case DUTY:
 			break;
 
 		default:
-			/*Illegal state*/
+			illegalStateChange = True;
+		}
+
+		/**
+		 * Illegal state change.
+		 */
+		if (illegalStateChange){
 			Error_Handler();
+		}
+
+		/**
+		 * Exit state methods
+		 */
+		switch(current){
+		case NOT_INITIALIZED:
+			break;
+		case READY:
+			break;
+		case DUTY:
+			break;
+		}
+
+		this->state = state;
+
+		/**
+		 * Join state methods
+		 */
+		switch(state){
+		case READY:
+			this.__setDuty(0.0);
+			break;
+		case DUTY:
+			break;
 		}
 	}
 
 
 	returnState MotorSystem::setDuty(float duty){
-		CHECK_LOWHANDLER(this);
-		this->duty = duty;
-
-		if(this->duty < 0){
-			duty = -this->duty;
+		if (this->state == DUTY){
+			this->__setDuty(duty);
+		} else {
+			/** Illegal operation*/
+			Error_Handler();
 		}
-		this->low->setDuty(duty);
-		return RS_OK;
 	}
 
 	float MotorSystem::getDuty(void){
@@ -94,7 +126,12 @@ namespace MotorSystem
 		float targetCurrent = this->current;
 		float targetSpeed = this->speed;
 
-		float cduty = this->speedControler.control(targetSpeed, nowSpeed);
-		this->setDuty(100.0 * std::sin(cnt++ / 100.0 * 2.0 * 3.141592));
+		/**
+		 * If state is VELOCITY mode, it doing PID control.
+		 */
+		if(this->state == VELOCITY){
+			float cduty = this->speedControler.control(targetSpeed, nowSpeed);
+			this->__setDuty(cduty);
+		}
 	}
 }

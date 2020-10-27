@@ -43,16 +43,20 @@ namespace MotorSystem{
 		/**
 		 *
 		 */
-		virtual float sendMessage(uint32_t sid,uint32_t rtr,uint32_t dlc,uint8_t* data) = 0;
+		virtual void sendMessage(uint32_t sid,uint32_t rtr,uint32_t dlc,uint8_t* data) = 0;
 	};
 
 	typedef enum{
-		NOT_INITIALIZE,
+		NOT_INITIALIZED,
 		READY,
+		DUTY,
+		VELOCITY,
 	}MOTORSYSTEM_STATE;
+	#define IS_MODE_ACTIVE(mode) ((mode == DUTY) || (mode == VELOCITY))
 
 	class MotorSystem{
 		lowMotorSystem* low;
+		#define CHECK_LOWHANDLER(t) if( t->low == NULL) Error_Handler();
 
 		float duty;
 
@@ -65,6 +69,19 @@ namespace MotorSystem{
 		 * internal parameters
 		 */
 		MOTORSYSTEM_STATE state;
+
+		/**
+		 * internal set duty method.
+		 */
+		void __setDuty(float){
+			CHECK_LOWHANDLER(this);
+			this->duty = duty;
+
+			if(this->duty < 0){
+				duty = -this->duty;
+			}
+			this->low->setDuty(duty);
+		}
 
 	public:
 		MotorSystem();
@@ -89,8 +106,6 @@ namespace MotorSystem{
 		void controlTick(void);
 
 	};
-
-	#define CHECK_LOWHANDLER(t) if( t->low == NULL) Error_Handler();
 }
 
 #endif /* INC_MOTORSYSTEM_MOTORSYSTEM_HPP_ */

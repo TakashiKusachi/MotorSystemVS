@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include<stdio.h>
+#include<math.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -34,7 +35,7 @@
 /* USER CODE BEGIN PD */
 extern void cpp_Init(void);
 extern void logoutput(void);
-extern void test_send(void);
+extern void test_send(float);
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -119,15 +120,18 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  const float PI = 3.1415; //
+  const int delay_time = 50; // [ms]
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  HAL_Delay(125);
+	  cont++;
+	  HAL_Delay(delay_time);
 	  HAL_GPIO_TogglePin(GPIOB,GPIO_ON_LED_Pin);
 
-	  test_send();
+	  test_send(100.0 * sin((float)cont * (delay_time / 1000.0) * 2.0 * PI));
 	  //logoutput();
 
   }
