@@ -187,7 +187,7 @@ void cpp_Init(void){
 }
 
 void logoutput(void){
-	printf("duty: [%5.4e], speed: [%5.4e]\r\n",ms.getDuty(),ms.getSpeed());
+	printf("mode: [%4d], duty: [% 5.4e], speed: [% 5.4e]\r\n",ms.getState(),ms.getDuty(),ms.getSpeed());
 }
 
 void test_send(float duty){
@@ -201,7 +201,7 @@ void test_send(float duty){
 void __motorsystem_tim17_tick(TIM_HandleTypeDef* htim){
 	//printf("test callback\r\n");
 	lms.controlTick();
-	//ms.controlTick();
+	ms.controlTick();
 }
 
 void __motorsystem_can_recive(CAN_HandleTypeDef* hcan){

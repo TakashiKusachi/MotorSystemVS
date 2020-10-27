@@ -44,7 +44,7 @@ namespace MotorSystem
 			case READY:
 				break;
 			default:
-				illegalStateChange = True;
+				illegalStateChange = true;
 			}
 			break;
 
@@ -53,14 +53,14 @@ namespace MotorSystem
 			case DUTY:
 				break;
 			default:
-				illegalStateChange = True;
+				illegalStateChange = true;
 			}
 			break;
 		case DUTY:
 			break;
 
 		default:
-			illegalStateChange = True;
+			illegalStateChange = true;
 		}
 
 		/**
@@ -89,11 +89,15 @@ namespace MotorSystem
 		 */
 		switch(state){
 		case READY:
-			this.__setDuty(0.0);
+			this->__setDuty(0.0);
 			break;
 		case DUTY:
 			break;
 		}
+	}
+
+	MOTORSYSTEM_STATE MotorSystem::getState(void){
+		return this->state;
 	}
 
 

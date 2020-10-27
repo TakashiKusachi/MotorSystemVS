@@ -73,7 +73,7 @@ namespace MotorSystem{
 		/**
 		 * internal set duty method.
 		 */
-		void __setDuty(float){
+		void __setDuty(float duty){
 			CHECK_LOWHANDLER(this);
 			this->duty = duty;
 
@@ -97,6 +97,7 @@ namespace MotorSystem{
 		 *
 		 */
 		void setState(MOTORSYSTEM_STATE state);
+		MOTORSYSTEM_STATE getState(void);
 
 		returnState setDuty(float);
 		float getDuty(void);
