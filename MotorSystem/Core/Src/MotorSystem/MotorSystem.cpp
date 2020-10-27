@@ -51,12 +51,15 @@ namespace MotorSystem
 		case READY:
 			switch(state){
 			case DUTY:
+			case VELOCITY:
 				break;
 			default:
 				illegalStateChange = true;
 			}
 			break;
 		case DUTY:
+			break;
+		case VELOCITY:
 			break;
 
 		default:
@@ -114,6 +117,16 @@ namespace MotorSystem
 		CHECK_LOWHANDLER(this);
 
 		return this->duty;
+	}
+
+	returnState MotorSystem::setVelocity(float vel){
+		if (this->state == VELOCITY){
+			this->speed = vel;
+		}else {
+			/** Illegal operation*/
+			Error_Handler();
+		}
+
 	}
 
 	float MotorSystem::getSpeed(void){

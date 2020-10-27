@@ -131,8 +131,8 @@ int main(void)
 	  HAL_Delay(delay_time);
 	  HAL_GPIO_TogglePin(GPIOB,GPIO_ON_LED_Pin);
 
-
-	  test_send(75.0 * sin((float)cont * (delay_time / 1000.0) * 2.0 * PI));
+	  test_send(200.0);
+	  //test_send(100 * sin((float)cont * (delay_time / 1000.0) * 2.0 * PI) + 100);
 	  logoutput();
 
   }

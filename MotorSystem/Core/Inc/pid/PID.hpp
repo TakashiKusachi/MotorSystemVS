@@ -8,6 +8,8 @@
 #ifndef INC_PID_PID_HPP_
 #define INC_PID_PID_HPP_
 
+#include<float.h>
+
 /**
  *
  * header only program
@@ -29,8 +31,8 @@ namespace PID{
 
 	public:
 		PIDControler(void){
-			this->K = 1;
-			this->Ti = 0;
+			this->K = 0.1;
+			this->Ti = 0.5;
 			this->Td = 0;
 			this->dt = 0.1;
 

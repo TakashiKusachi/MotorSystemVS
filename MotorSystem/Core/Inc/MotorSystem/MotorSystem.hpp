@@ -102,6 +102,7 @@ namespace MotorSystem{
 		returnState setDuty(float);
 		float getDuty(void);
 
+		returnState setVelocity(float);
 		float getSpeed(void);
 
 		void controlTick(void);

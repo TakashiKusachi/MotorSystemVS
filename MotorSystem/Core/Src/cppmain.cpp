@@ -183,7 +183,7 @@ void cpp_Init(void){
 	ms.init(&lms);
 	lms.start();
 
-	ms.setState(MotorSystem::MOTORSYSTEM_STATE::DUTY);
+	ms.setState(MotorSystem::MOTORSYSTEM_STATE::VELOCITY);
 }
 
 void logoutput(void){
@@ -191,7 +191,7 @@ void logoutput(void){
 }
 
 void test_send(float duty){
-	lms.sendMessage(MAKE_CMD(SET_DUTY,0x00), 0, 4, (uint8_t*)&duty);
+	lms.sendMessage(MAKE_CMD(SET_VELOCITY,0x00), 0, 4, (uint8_t*)&duty);
 }
 
 
@@ -233,6 +233,10 @@ void __motorsystem_can_recive(CAN_HandleTypeDef* hcan){
 		case SET_DUTY:
 			ms.setDuty(((ConverterType*)&data)->F.data);
 			break;
+		case SET_VELOCITY:
+			ms.setVelocity(((ConverterType*)&data)->F.data);
+			break;
+
 		default:
 			Error_Handler();
 			break;
