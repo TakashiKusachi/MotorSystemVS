@@ -1,0 +1,49 @@
+/*
+ * lowMotorSystem.hpp
+ *
+ *  Created on: Oct 29, 2020
+ *      Author: 嵩
+ */
+
+#ifndef INC_MOTORSYSTEM_LOWMOTORSYSTEM_HPP_
+#define INC_MOTORSYSTEM_LOWMOTORSYSTEM_HPP_
+
+#include "MotorSystem/motorSystem.hpp"
+
+/**
+ * hardware control class for motor system.
+ */
+class lowMotorSystem: public MotorSystem::lowMotorSystem{
+	float tick_time;
+	float countPerRadius;
+	float speed;
+public:
+	lowMotorSystem(float tick_time, uint32_t PPR);
+
+	/**
+	 *  Initialize funtion.
+	 *
+	 *  Initalize of the hardware registar and midl
+	 *  1. Setting of callback functions.
+	 *
+	 *  Args:
+	 *  	tick_htim (TIM_HandleTypeDef*): TIM Handler of motorsystem control tick generater. use PERIOD_ELAPSED
+	 */
+	void init(TIM_HandleTypeDef* tick_htim);
+
+	void start(void);
+
+	void setDuty(float duty) override;
+
+	float getCurrent(void) override;
+
+	float getSpeed(void) override;
+
+	void sendMessage(uint32_t sid,uint32_t rtr,uint32_t dlc,uint8_t* data) override;
+
+	void controlTick(void);
+};
+
+
+
+#endif /* INC_MOTORSYSTEM_LOWMOTORSYSTEM_HPP_ */

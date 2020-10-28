@@ -30,12 +30,28 @@ namespace PID{
 		float befor_e;
 
 	public:
-		PIDControler(void){
-			this->K = 0.1;
-			this->Ti = 0.5;
-			this->Td = 0;
-			this->dt = 0.1;
+		PIDControler(float K,float Ti,float Td,float dt){
+			this->K = K;
+			this->Ti = Ti;
+			this->Td = Td;
+			this->dt = dt;
 
+			this->resetVariable();
+		}
+
+		void setK(float k){
+			this->K = k;
+		}
+
+		void setTi(float ti){
+			this->Ti = ti;
+		}
+
+		void setTd(float td){
+			this->Td = td;
+		}
+
+		void resetVariable(void){
 			this->sum_i = 0;
 			this->befor_e = 0;
 		}
@@ -62,6 +78,7 @@ namespace PID{
 
 }
 
+#define I_CONTROL_DISABLE FLT_MAX
 
 
 #endif /* INC_PID_PID_HPP_ */
