@@ -5,10 +5,13 @@
  *      Author: 嵩
  */
 
-#include "main.h"
-#include <stdio.h>
-#include <math.h>
+//#include <stdio.h>
+//#include <math.h>
+
+#include <stddef.h> // NULL
 #include "./MotorSystem/MotorSystem.hpp"
+
+#define NOT_IMPLEMENTED_ERROR() this->low->NotImplemented(__FILE__,__LINE__)
 
 namespace MotorSystem
 {
@@ -78,7 +81,7 @@ namespace MotorSystem
 		 * Illegal state change.
 		 */
 		if (illegalStateChange){
-			Error_Handler();
+			this->low->ErrorHandler();
 		}
 
 		/**
@@ -117,7 +120,7 @@ namespace MotorSystem
 			this->__setDuty(duty);
 		} else {
 			/** Illegal operation*/
-			Error_Handler();
+			this->low->ErrorHandler();
 		}
 	}
 
@@ -132,7 +135,7 @@ namespace MotorSystem
 			this->speed = vel;
 		}else {
 			/** Illegal operation*/
-			Error_Handler();
+			this->low->ErrorHandler();
 		}
 
 	}
@@ -146,15 +149,18 @@ namespace MotorSystem
 		static int cnt = 0;
 		CHECK_LOWHANDLER(this);
 
-		float nowCurrent = this->low->getCurrent();
-		float nowSpeed = this->low->getSpeed();
-		float targetCurrent = this->current;
-		float targetSpeed = this->speed;
+		//float nowCurrent = this->low->getCurrent();
+		//float nowSpeed = this->low->getSpeed();
+		//float targetCurrent = this->current;
+		//float targetSpeed = this->speed;
 
 		/**
 		 * If state is VELOCITY mode, it doing PID control.
 		 */
 		if(this->state == VELOCITY){
+			float nowSpeed = this->low->getSpeed();
+			float targetSpeed = this->speed;
+
 			float cduty = this->speedControler.control(targetSpeed, nowSpeed);
 			this->__setDuty(cduty);
 		}
@@ -177,29 +183,61 @@ namespace MotorSystem
 
 		if (rtr == true){
 			switch(GET_CMD(id)){
-			case GET_DUTY:
-				convert.F.data = this->getVelocity();
-				this->low->sendMessage(id, 1, 4, (uint8_t*)&convert);
+			case GET_MODE:
+				convert.MODE.mode = this->getMode();
+				this->low->sendMessage(id,0,1,(unsigned char*)&convert);
 				break;
+
+			case GET_VELOCITY:
+				convert.F.data = this->getVelocity();
+				this->low->sendMessage(id, 0, 4, (unsigned char*)&convert);
+				break;
+
+			case GET_DUTY:
+				convert.F.data = this->getDuty();
+				this->low->sendMessage(id, 0, 4, (unsigned char*)&convert);
+				break;
+
 			default:
-				Error_Handler();
+				this->low->ErrorHandler();
 				break;
 			}
 		} else { //if RTR == 0
 			switch(GET_CMD(id)){
-			case SET_DUTY:
-				this->setDuty(pconvert->F.data);
-				break;
 			case SET_VELOCITY:
 				this->setVelocity(pconvert->F.data);
+				break;
+
+			case SET_TORQUE:
+				NOT_IMPLEMENTED_ERROR();
+				break;
+
+			case SET_DUTY:
+				this->setDuty(pconvert->F.data);
 				break;
 
 			case SET_MODE:
 				this->setMode(pconvert->MODE.mode);
 				break;
 
+			case BEGIN:
+				this->begin();
+				break;
+			
+			case SET_VCC:
+				NOT_IMPLEMENTED_ERROR();
+				break;
+
+			case SET_PPR:
+				NOT_IMPLEMENTED_ERROR();
+				break;
+
+			case SET_KT:
+				NOT_IMPLEMENTED_ERROR();
+				break;
+
 			default:
-				Error_Handler();
+				this->low->ErrorHandler();
 				break;
 			}
 		}

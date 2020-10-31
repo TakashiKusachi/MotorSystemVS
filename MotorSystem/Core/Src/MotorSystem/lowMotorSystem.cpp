@@ -124,8 +124,16 @@ void lowMotorSystem::setDuty(float duty){
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,(uint32_t)(period * duty / 100.0));
 }
 
-float lowMotorSystem::getCurrent(void){
+void lowMotorSystem::setDirection(int dir){
+	if (dir == 0){
+		HAL_GPIO_WritePin(GPIO_DIR_GPIO_Port,GPIO_DIR_Pin,GPIO_PIN_RESET);
+	} else {
+		HAL_GPIO_WritePin(GPIO_DIR_GPIO_Port,GPIO_DIR_Pin,GPIO_PIN_SET);
+	}
+}
 
+float lowMotorSystem::getCurrent(void){
+	this->NotImplemented(__FILE__,__LINE__);
 }
 
 float lowMotorSystem::getSpeed(void){
@@ -143,6 +151,15 @@ void lowMotorSystem::sendMessage(uint32_t sid,uint32_t rtr,uint32_t dlc,uint8_t*
 	header.TransmitGlobalTime = DISABLE;
 
 	HAL_CAN_AddTxMessage(&hcan,&header,data,&transmit_mailbox);
+}
+
+void lowMotorSystem::NotImplemented(const char* file,int line){
+	printf("Not Implemented Error: %s:[%d]\r\n",file,line);
+	Error_Handler();
+}
+
+void lowMotorSystem::ErrorHandler(void){
+	Error_Handler();
 }
 
 void lowMotorSystem::controlTick(void) {
@@ -165,8 +182,7 @@ void __motorsystem_can_recive(CAN_HandleTypeDef* hcan){
 	uint8_t data[8];
 	HAL_CAN_GetRxMessage(hcan,CAN_RX_FIFO0,&header,data);
 	ms.parseCANMessage(header.StdId, header.RTR == 1, header.DLC, data);
-
-	HAL_GPIO_TogglePin(GPIO_DIR_GPIO_Port,GPIO_DIR_Pin);
+	HAL_GPIO_TogglePin(GPIO_ON_LED_GPIO_Port,GPIO_ON_LED_Pin);
 }
 
 void __makeFilterConfig(CAN_FilterTypeDef* sFilterConfig){

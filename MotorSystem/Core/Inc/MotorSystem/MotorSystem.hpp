@@ -83,6 +83,16 @@ namespace MotorSystem{
 		virtual void setDuty(float) = 0;
 
 		/**
+		 *
+		 */
+		virtual void setDirection(int) = 0;
+
+		/**
+		 *
+		 */
+		virtual void setPPR(int) = 0;
+
+		/**
 		 * get current [A].
 		 *
 		 *  Returns:
@@ -98,12 +108,22 @@ namespace MotorSystem{
 		/**
 		 *
 		 */
-		virtual void sendMessage(uint32_t sid,uint32_t rtr,uint32_t dlc,uint8_t* data) = 0;
+		virtual void sendMessage(unsigned long sid,unsigned long rtr,unsigned long dlc,unsigned char* data) = 0;
+
+		/**
+		 *
+		 */
+		virtual void NotImplemented(const char*,int) = 0;
+
+		/**
+		 *
+		 */
+		virtual void ErrorHandler(void) = 0;
 	};
 
 	class MotorSystem{
 		lowMotorSystem* low;
-		#define CHECK_LOWHANDLER(t) if( t->low == NULL) Error_Handler();
+		#define CHECK_LOWHANDLER(t) if( t->low == NULL) this->low->ErrorHandler();
 
 		float duty;
 
@@ -125,7 +145,10 @@ namespace MotorSystem{
 			this->duty = duty;
 
 			if(this->duty < 0){
+				this->low->setDirection(1);
 				duty = -this->duty;
+			}else{
+				this->low->setDirection(0);
 			}
 			this->low->setDuty(duty);
 		}
