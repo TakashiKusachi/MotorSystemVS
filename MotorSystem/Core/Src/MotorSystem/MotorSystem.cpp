@@ -24,6 +24,7 @@ namespace MotorSystem
 							MOTORSYSTEM_DEFAULT_Td,
 							MOTORSYSTEM_DEFAULT_dt){
 		this->low = NULL;
+		this->voltage = 0;
 		this->state = NOT_INITIALIZED;
 	}
 
@@ -33,11 +34,14 @@ namespace MotorSystem
 	returnState MotorSystem::init(lowMotorSystem* low){
 		this->low = low;
 		this->duty = 0;
-		this->setMode(READY);
+		this->setMode(INITIALIZED);
 		return RS_OK;
 	}
 
 	void MotorSystem::begin(void){
+		if(this->state != INITIALIZED)this->low->ErrorHandler();
+		this->low->begin();
+		this->setMode(READY);
 		return;
 	}
 
@@ -48,9 +52,19 @@ namespace MotorSystem
 		MOTORSYSTEM_STATE current = this->state;
 		bool illegalStateChange = false;
 
+		if(state == SYSTEM_RESET)this->low->reset();
+
 		switch(current){
 
 		case NOT_INITIALIZED:
+			switch(state){
+			case INITIALIZED:
+				break;
+			default:
+				illegalStateChange = true;
+			}
+			break;
+		case INITIALIZED:
 			switch(state){
 			case READY:
 				break;
@@ -58,7 +72,6 @@ namespace MotorSystem
 				illegalStateChange = true;
 			}
 			break;
-
 		case READY:
 			switch(state){
 			case DUTY:
@@ -90,9 +103,13 @@ namespace MotorSystem
 		switch(current){
 		case NOT_INITIALIZED:
 			break;
+		case INITIALIZED:
+			break;
 		case READY:
 			break;
 		case DUTY:
+			break;
+		case VELOCITY:
 			break;
 		}
 
@@ -102,10 +119,16 @@ namespace MotorSystem
 		 * Join state methods
 		 */
 		switch(state){
+		case NOT_INITIALIZED:
+			break;
+		case INITIALIZED:
+			break;
 		case READY:
 			this->__setDuty(0.0);
 			break;
 		case DUTY:
+			break;
+		case VELOCITY:
 			break;
 		}
 	}
@@ -141,18 +164,23 @@ namespace MotorSystem
 	}
 
 	float MotorSystem::getVelocity(void){
+		if(this->state)
 		CHECK_LOWHANDLER(this);
 		return this->low->getSpeed();
 	}
 
-	void MotorSystem::controlTick(void){
-		static int cnt = 0;
+	float MotorSystem::getCurrent(void){
 		CHECK_LOWHANDLER(this);
+		if(IS_NOT_BEGIN(this->state))return 0;
+		return this->low->getCurrent();
+	}
 
-		//float nowCurrent = this->low->getCurrent();
-		//float nowSpeed = this->low->getSpeed();
-		//float targetCurrent = this->current;
-		//float targetSpeed = this->speed;
+	void MotorSystem::setVoltage(float vol){
+		this->supplyVoltage = vol;
+	}
+
+	void MotorSystem::controlTick(void){
+		CHECK_LOWHANDLER(this);
 
 		/**
 		 * If state is VELOCITY mode, it doing PID control.
@@ -161,8 +189,8 @@ namespace MotorSystem
 			float nowSpeed = this->low->getSpeed();
 			float targetSpeed = this->speed;
 
-			float cduty = this->speedControler.control(targetSpeed, nowSpeed);
-			this->__setDuty(cduty);
+			float vol = this->speedControler.control(targetSpeed, nowSpeed);
+			this->__setVoltage(vol);
 		}
 	}
 
@@ -183,6 +211,12 @@ namespace MotorSystem
 
 		if (rtr == true){
 			switch(GET_CMD(id)){
+
+			case BEGIN:
+				this->begin();
+				this->low->sendMessage(id,0,0,(unsigned char*)&convert);
+				break;
+
 			case GET_MODE:
 				convert.MODE.mode = this->getMode();
 				this->low->sendMessage(id,0,1,(unsigned char*)&convert);
@@ -193,8 +227,16 @@ namespace MotorSystem
 				this->low->sendMessage(id, 0, 4, (unsigned char*)&convert);
 				break;
 
+			case GET_TORQUE:
+				NOT_IMPLEMENTED_ERROR();
+				break;
+
 			case GET_DUTY:
 				convert.F.data = this->getDuty();
+				this->low->sendMessage(id, 0, 4, (unsigned char*)&convert);
+				break;
+			case GET_CURRENT:
+				convert.F.data = this->getCurrent();
 				this->low->sendMessage(id, 0, 4, (unsigned char*)&convert);
 				break;
 
@@ -219,13 +261,9 @@ namespace MotorSystem
 			case SET_MODE:
 				this->setMode(pconvert->MODE.mode);
 				break;
-
-			case BEGIN:
-				this->begin();
-				break;
 			
 			case SET_VCC:
-				NOT_IMPLEMENTED_ERROR();
+				this->setVoltage(pconvert->F.data);
 				break;
 
 			case SET_PPR:
@@ -234,6 +272,18 @@ namespace MotorSystem
 
 			case SET_KT:
 				NOT_IMPLEMENTED_ERROR();
+				break;
+
+			case SET_VGAIN_K:
+				this->speedControler.setK(pconvert->F.data);
+				break;
+
+			case SET_VGAIN_TI:
+				this->speedControler.setTi(pconvert->F.data);
+				break;
+
+			case SET_VGAIN_TD:
+				this->speedControler.setTd(pconvert->F.data);
 				break;
 
 			default:

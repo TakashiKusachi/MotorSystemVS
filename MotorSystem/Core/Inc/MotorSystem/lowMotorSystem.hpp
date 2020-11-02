@@ -17,6 +17,7 @@ class lowMotorSystem: public MotorSystem::lowMotorSystem{
 	float tick_time;
 	float countPerRadius;
 	float speed;
+	int id;
 public:
 	lowMotorSystem(float tick_time, uint32_t PPR);
 
@@ -31,11 +32,17 @@ public:
 	 */
 	void init(TIM_HandleTypeDef* tick_htim);
 
+	int getID(void) override;
+
+	void begin(void) override;
+
 	void start(void);
 
 	void setDuty(float duty) override;
 
 	void setDirection(int) override;
+
+	void setPPR(int) override;
 
 	float getCurrent(void) override;
 
@@ -48,6 +55,9 @@ public:
 	void ErrorHandler(void) override;
 
 	void controlTick(void);
+
+	void reset(void) override;
+
 };
 
 
