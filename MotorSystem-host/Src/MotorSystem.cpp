@@ -5,7 +5,7 @@
  *      Author: 嵩
  */
 
-#include "MotorSystem/MotorSystem.hpp"
+#include "../MotorSystem/MotorSystem.hpp"
 
 namespace MotorSystem{
 	typedef union{

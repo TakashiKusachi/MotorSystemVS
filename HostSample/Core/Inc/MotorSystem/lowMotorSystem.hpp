@@ -8,7 +8,7 @@
 #ifndef INC_MOTORSYSTEM_LOWMOTORSYSTEM_HPP_
 #define INC_MOTORSYSTEM_LOWMOTORSYSTEM_HPP_
 
-#include "./MotorSystem.hpp"
+#include "MotorSystem/MotorSystem.hpp"
 #include "main.h"
 
 #define MAX_NUMBER_OF_MS_INSTANCE 16

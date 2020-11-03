@@ -3,6 +3,8 @@
 	<name>MotorSystem</name>
 	<comment></comment>
 	<projects>
+		<project>MotorSystem-common</project>
+		<project>MotorSystem-node</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

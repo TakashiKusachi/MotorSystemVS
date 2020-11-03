@@ -151,38 +151,38 @@ namespace debug_functions{
 	void MS_Begin(void){
 		unsigned char data[8];
 		recive_begin = false;
-		lms.sendMessage(MAKE_CMD(MOTORSYSTEM_CMD::BEGIN,lms.getID()),1,0,data);
+		lms.sendMessage(CAN_MESSAGE_MAKE_CMD(MOTORSYSTEM_CMD::BEGIN,lms.getID()),1,0,data);
 		while(!recive_begin);
 	}
 
 	void MS_SetModeDUTY(void){
 		unsigned char data[8];
 		data[0] = (unsigned char)MOTORSYSTEM_STATE::DUTY;
-		lms.sendMessage(MAKE_CMD(MOTORSYSTEM_CMD::SET_MODE,lms.getID()),0,1,data);
+		lms.sendMessage(CAN_MESSAGE_MAKE_CMD(MOTORSYSTEM_CMD::SET_MODE,lms.getID()),0,1,data);
 	}
 
 	void MS_SetModeVelocity(void){
 		unsigned char data[8];
 		data[0] = (unsigned char)MOTORSYSTEM_STATE::VELOCITY;
-		lms.sendMessage(MAKE_CMD(MOTORSYSTEM_CMD::SET_MODE,lms.getID()),0,1,data);
+		lms.sendMessage(CAN_MESSAGE_MAKE_CMD(MOTORSYSTEM_CMD::SET_MODE,lms.getID()),0,1,data);
 	}
 
 	int GetMode(void){
 		unsigned char data[8];
 		recive_get_mode = false;
-		lms.sendMessage(MAKE_CMD(MOTORSYSTEM_CMD::GET_MODE,lms.getID()), 1, 0, data);
+		lms.sendMessage(CAN_MESSAGE_MAKE_CMD(MOTORSYSTEM_CMD::GET_MODE,lms.getID()), 1, 0, data);
 		while(!recive_get_mode);
 		return mode;
 	}
 
 	void SetDuty(float duty){
-		lms.sendMessage(MAKE_CMD(MOTORSYSTEM_CMD::SET_DUTY,lms.getID()), 0, 4, (uint8_t*)&duty);
+		lms.sendMessage(CAN_MESSAGE_MAKE_CMD(MOTORSYSTEM_CMD::SET_DUTY,lms.getID()), 0, 4, (uint8_t*)&duty);
 	}
 
 	float GetDuty(void){
 		unsigned char dumy[8];
 		recive_get_duty = false;
-		lms.sendMessage(MAKE_CMD(MOTORSYSTEM_CMD::GET_DUTY,lms.getID()), 1, 0, dumy);
+		lms.sendMessage(CAN_MESSAGE_MAKE_CMD(MOTORSYSTEM_CMD::GET_DUTY,lms.getID()), 1, 0, dumy);
 		while(!recive_get_duty);
 		return duty;
 	}
@@ -190,7 +190,7 @@ namespace debug_functions{
 	float GetVelocity(void){
 		unsigned char dumy[8];
 		recive_get_velocity = false;
-		lms.sendMessage(MAKE_CMD(MOTORSYSTEM_CMD::GET_VELOCITY,lms.getID()), 1, 0, dumy);
+		lms.sendMessage(CAN_MESSAGE_MAKE_CMD(MOTORSYSTEM_CMD::GET_VELOCITY,lms.getID()), 1, 0, dumy);
 		while(!recive_get_velocity);
 		return velocity;
 
@@ -199,7 +199,7 @@ namespace debug_functions{
 	float GetCurrent(void){
 		unsigned char dumy[8];
 		recive_get_current = false;
-		lms.sendMessage(MAKE_CMD(MOTORSYSTEM_CMD::GET_CURRENT,lms.getID()), 1, 0, dumy);
+		lms.sendMessage(CAN_MESSAGE_MAKE_CMD(MOTORSYSTEM_CMD::GET_CURRENT,lms.getID()), 1, 0, dumy);
 		while(!recive_get_current);
 		return current;
 	}
@@ -207,7 +207,7 @@ namespace debug_functions{
 	void Reset(void){
 		unsigned char data[8];
 		data[0] = (unsigned char)MOTORSYSTEM_STATE::SYSTEM_RESET;
-		lms.sendMessage(MAKE_CMD(MOTORSYSTEM_CMD::SET_MODE,lms.getID()),0,1,data);
+		lms.sendMessage(CAN_MESSAGE_MAKE_CMD(MOTORSYSTEM_CMD::SET_MODE,lms.getID()),0,1,data);
 
 	}
 
@@ -322,7 +322,7 @@ namespace debug_functions{
 		HAL_CAN_GetRxMessage(hcan,CAN_RX_FIFO1,&header,data);
 		converter = (ConverterType*)data;
 
-		switch(GET_CMD(header.StdId)){
+		switch(CAN_MESSAGE_GET_CMD(header.StdId)){
 		case GET_MODE:
 			mode = converter->MODE.mode;
 			recive_get_mode = true;

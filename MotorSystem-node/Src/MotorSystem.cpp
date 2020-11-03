@@ -9,7 +9,7 @@
 //#include <math.h>
 
 #include <stddef.h> // NULL
-#include "./MotorSystem/MotorSystem.hpp"
+#include "../MotorSystem/MotorSystem.hpp"
 
 #define NOT_IMPLEMENTED_ERROR() this->low->NotImplemented(__FILE__,__LINE__)
 
@@ -210,7 +210,7 @@ namespace MotorSystem
 		ConverterType* pconvert = (ConverterType*)data;
 
 		if (rtr == true){
-			switch(GET_CMD(id)){
+			switch(CAN_MESSAGE_GET_CMD(id)){
 
 			case BEGIN:
 				this->begin();
@@ -245,7 +245,7 @@ namespace MotorSystem
 				break;
 			}
 		} else { //if RTR == 0
-			switch(GET_CMD(id)){
+			switch(CAN_MESSAGE_GET_CMD(id)){
 			case SET_VELOCITY:
 				this->setVelocity(pconvert->F.data);
 				break;

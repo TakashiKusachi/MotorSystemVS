@@ -10,7 +10,7 @@
 #include "main.h"
 #include "cppmain.hpp"
 
-#include "./MotorSystem/MotorSystem.hpp"
+#include "MotorSystem/MotorSystem.hpp"
 #include "./MotorSystem/lowMotorSystem.hpp"
 
 lowMotorSystem lms;
