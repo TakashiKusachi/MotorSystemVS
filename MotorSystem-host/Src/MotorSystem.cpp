@@ -55,10 +55,47 @@ namespace MotorSystem{
 		return this->mode;
 	}
 
-	void MotorSystem::setDuty(float duty){
+	returnState MotorSystem::setVoltage(float vol){
+		ConverterType converter;
+		converter.F.data = vol;
+		this->sendMessage(MOTORSYSTEM_CMD::SET_VCC,0, 4, converter.data);
+	}
+
+	returnState MotorSystem::setPPR(float ppr){
+		ConverterType converter;
+		converter.F.data = ppr;
+		this->sendMessage(MOTORSYSTEM_CMD::SET_PPR,0, 4, converter.data);
+	}
+
+	returnState MotorSystem::setKT(float kt){
+		ConverterType converter;
+		converter.F.data = kt;
+		this->sendMessage(MOTORSYSTEM_CMD::SET_KT,0, 4, converter.data);
+	}
+
+	returnState MotorSystem::setVGAIN_K(float k){
+		ConverterType converter;
+		converter.F.data = k;
+		this->sendMessage(MOTORSYSTEM_CMD::SET_VGAIN_K,0, 4, converter.data);
+	}
+
+	returnState MotorSystem::setVGAIN_TI(float ti){
+		ConverterType converter;
+		converter.F.data = ti;
+		this->sendMessage(MOTORSYSTEM_CMD::SET_VGAIN_TI,0, 4, converter.data);
+	}
+
+	returnState MotorSystem::setVGAIN_TD(float td){
+		ConverterType converter;
+		converter.F.data = td;
+		this->sendMessage(MOTORSYSTEM_CMD::SET_VGAIN_TD,0, 4, converter.data);
+	}
+
+	returnState MotorSystem::setDuty(float duty){
 		ConverterType converter;
 		converter.F.data = duty;
 		this->sendMessage(MOTORSYSTEM_CMD::SET_DUTY,0, 4, converter.data);
+		return RS_OK;
 
 	}
 
@@ -70,10 +107,11 @@ namespace MotorSystem{
 		return this->duty;
 	}
 
-	void MotorSystem::setVelocity(float vel){
+	returnState MotorSystem::setVelocity(float vel){
 		ConverterType converter;
 		converter.F.data = vel;
 		this->sendMessage(MOTORSYSTEM_CMD::SET_VELOCITY,0, 4, converter.data);
+		return RS_OK;
 	}
 
 	float MotorSystem::getVelocity(void){
@@ -84,18 +122,27 @@ namespace MotorSystem{
 		return this->velocity;
 	}
 
+	returnState MotorSystem::setTorque(float tor){
+		ConverterType converter;
+		converter.F.data = tor;
+		this->sendMessage(MOTORSYSTEM_CMD::SET_TORQUE,0, 4, converter.data);
+		return RS_OK;
+	}
+
+	float MotorSystem::getTorque(void){
+		ConverterType converter;
+		this->recive_torque = false;
+		this->sendMessage(MOTORSYSTEM_CMD::GET_TORQUE,1, 0, converter.data);
+		while(!this->recive_torque);
+		return this->torque;
+	}
+
 	float MotorSystem::getCurrent(void){
 		ConverterType converter;
 		this->recive_current = false;
 		this->sendMessage(MOTORSYSTEM_CMD::GET_CURRENT,1, 0, converter.data);
 		while(!this->recive_current);
 		return this->current;
-	}
-
-	void MotorSystem::setVoltage(float vol){
-		ConverterType converter;
-		converter.F.data = vol;
-		this->sendMessage(MOTORSYSTEM_CMD::SET_VCC,0, 4, converter.data);
 	}
 
 	void MotorSystem::parseCANMessage(unsigned long id, bool rtr,unsigned char dlc,unsigned char* data){
@@ -119,6 +166,10 @@ namespace MotorSystem{
 		case GET_VELOCITY:
 			this->velocity = converter->F.data;
 			this->recive_velocity = true;
+			break;
+		case GET_TORQUE:
+			this->torque = converter->F.data;
+			this->recive_torque = true;
 			break;
 		case GET_CURRENT:
 			this->current = converter->F.data;

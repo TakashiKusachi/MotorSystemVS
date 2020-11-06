@@ -137,6 +137,29 @@ namespace MotorSystem
 		return this->state;
 	}
 
+	returnState MotorSystem::setVoltage(float vol){
+		this->supplyVoltage = vol;
+	}
+
+	returnState MotorSystem::setPPR(float ppr){
+		this->low->setPPR((int)ppr);
+	}
+
+	returnState MotorSystem::setKT(float kt){
+		NOT_IMPLEMENTED_ERROR();
+	}
+
+	returnState MotorSystem::setVGAIN_K(float k){
+		this->speedControler.setK(k);
+	}
+
+	returnState MotorSystem::setVGAIN_TI(float ti){
+		this->speedControler.setTi(ti);
+	}
+
+	returnState MotorSystem::setVGAIN_TD(float td){
+		this->speedControler.setTd(td);
+	}
 
 	returnState MotorSystem::setDuty(float duty){
 		if (this->state == DUTY){
@@ -169,14 +192,18 @@ namespace MotorSystem
 		return this->low->getSpeed();
 	}
 
+	returnState MotorSystem::setTorque(float tor){
+		NOT_IMPLEMENTED_ERROR();
+	}
+
+	float MotorSystem::getTorque(void){
+		NOT_IMPLEMENTED_ERROR();
+	}
+
 	float MotorSystem::getCurrent(void){
 		CHECK_LOWHANDLER(this);
 		if(IS_NOT_BEGIN(this->state))return 0;
 		return this->low->getCurrent();
-	}
-
-	void MotorSystem::setVoltage(float vol){
-		this->supplyVoltage = vol;
 	}
 
 	void MotorSystem::controlTick(void){
@@ -228,7 +255,8 @@ namespace MotorSystem
 				break;
 
 			case GET_TORQUE:
-				NOT_IMPLEMENTED_ERROR();
+				convert.F.data = this->getTorque();
+				this->low->sendMessage(id, 0, 4, (unsigned char*)&convert);
 				break;
 
 			case GET_DUTY:
@@ -251,7 +279,7 @@ namespace MotorSystem
 				break;
 
 			case SET_TORQUE:
-				NOT_IMPLEMENTED_ERROR();
+				this->setTorque(pconvert->F.data);
 				break;
 
 			case SET_DUTY:
@@ -267,23 +295,23 @@ namespace MotorSystem
 				break;
 
 			case SET_PPR:
-				NOT_IMPLEMENTED_ERROR();
+				this->setPPR(pconvert->F.data);
 				break;
 
 			case SET_KT:
-				NOT_IMPLEMENTED_ERROR();
+				this->setKT(pconvert->F.data);
 				break;
 
 			case SET_VGAIN_K:
-				this->speedControler.setK(pconvert->F.data);
+				this->setVGAIN_K(pconvert->F.data);
 				break;
 
 			case SET_VGAIN_TI:
-				this->speedControler.setTi(pconvert->F.data);
+				this->setVGAIN_TI(pconvert->F.data);
 				break;
 
 			case SET_VGAIN_TD:
-				this->speedControler.setTd(pconvert->F.data);
+				this->setVGAIN_TD(pconvert->F.data);
 				break;
 
 			default:

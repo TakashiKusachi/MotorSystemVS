@@ -8,6 +8,7 @@
 #ifndef MOTORSYSTEM_HPP_
 #define MOTORSYSTEM_HPP_
 
+#include "MotorSystem-common/motorsystem_abstract.hpp"
 #include "MotorSystem-common/motorsystem_cmd.hpp"
 #include "MotorSystem-common/motorsystem_mode.hpp"
 
@@ -22,7 +23,7 @@ namespace MotorSystem{
 		virtual void sendMessage(unsigned long sid,unsigned long rtr,unsigned long dlc, unsigned char* data) = 0;
 	};
 
-	class MotorSystem{
+	class MotorSystem:public IMotorSystem{
 		lowMotorSystem* low;
 		#define CHECK_LOWHANDLER(t) if( t->low == NULL) this->low->ErrorHandler();
 
@@ -39,6 +40,9 @@ namespace MotorSystem{
 		volatile bool recive_velocity;
 		float velocity;
 
+		volatile bool recive_torque;
+		float torque;
+
 		volatile bool recive_current;
 		float current;
 
@@ -52,25 +56,35 @@ namespace MotorSystem{
 		 */
 		void init(lowMotorSystem*,int);
 
-		void begin(void);
+		void begin(void) override;
 
 		/**
 		 * Change State method.
 		 *
 		 *
 		 */
-		void setMode(MOTORSYSTEM_STATE state);
-		MOTORSYSTEM_STATE getMode(void);
+		void setMode(MOTORSYSTEM_STATE state) override;
+		MOTORSYSTEM_STATE getMode(void) override;
 
-		void setDuty(float);
-		float getDuty(void);
+		returnState setVoltage(float) override;
+		returnState setPPR(float) override;
+		returnState setKT(float)  override;
 
-		void setVelocity(float);
-		float getVelocity(void);
+		returnState setVGAIN_K(float) override;
+		returnState setVGAIN_TI(float) override;
+		returnState setVGAIN_TD(float) override;
 
-		float getCurrent(void);
+		returnState setDuty(float) override;
+		float getDuty(void) override;
 
-		void setVoltage(float);
+		returnState setVelocity(float) override;
+		float getVelocity(void) override;
+
+		returnState setTorque(float) override;
+		float getTorque(void) override;
+
+		float getCurrent(void) override;
+;
 
 		void parseCANMessage(unsigned long id, bool rtr,unsigned char dlc,unsigned char* data);
 
