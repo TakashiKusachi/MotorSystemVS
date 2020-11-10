@@ -17,7 +17,13 @@
 
 namespace PID{
 
-	class PIDControler{
+	class IPID{
+	public:
+		virtual void resetVariable(void) = 0;
+		virtual float control(float,float) = 0;
+	};
+
+	class PIDControler: public IPID{
 
 		/** parameters */
 		float K; /** Gain */
@@ -49,6 +55,18 @@ namespace PID{
 
 		void setTd(float td){
 			this->Td = td;
+		}
+
+		float getK(void){
+			return this->K;
+		}
+
+		float getTi(void){
+			return this->Ti;
+		}
+
+		float getTd(void){
+			return this->Td;
 		}
 
 		void resetVariable(void){
