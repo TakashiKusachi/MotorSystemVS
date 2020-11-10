@@ -175,6 +175,9 @@ namespace MotorSystem{
 			this->current = converter->F.data;
 			this->recive_current = true;
 			break;
+		case SEND_ERROR:
+			this->low->ErrorHandler();
+			break;
 		}
 	}
 

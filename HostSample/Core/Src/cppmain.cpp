@@ -68,6 +68,7 @@ void consoleControl(void){
 		printf("2: Begin\r\n");
 		printf("3: SetMode\r\n");
 		printf("4: Duty\r\n");
+		printf("5: SetPropaties\r\n");
 		printf(">");
 		if(uartScanf("%d",&id) == false) continue;
 		printf("\r\ninput code: %d\r\n",id);
@@ -104,6 +105,43 @@ void consoleControl(void){
 				continue;
 			}
 			ms.setDuty(duty);
+			break;
+		case 5:
+			printf("1: Set Voltage\r\n");
+			printf("2: Set PPR\r\n");
+			printf("3: Set Kt\r\n");
+			printf(">");
+			if(uartScanf("%d",&mode) == false) continue;
+			printf("\r\ninput code: %d\r\n",mode);
+			switch(mode){
+			case 1:
+				float vol;
+				printf("voltage[V]> ");
+				if (uartScanf("%f",&vol) == false){
+					printf("not format.\r\n");
+					continue;
+				}
+				ms.setVoltage(vol);
+				break;
+			case 2:
+				float PPR;
+				printf("PPR[pulse per R]> ");
+				if (uartScanf("%f",&PPR) == false){
+					printf("not format.\r\n");
+					continue;
+				}
+				ms.setPPR(PPR);
+				break;
+			case 3:
+				float KT;
+				printf("Torque constant[mNm/A]> ");
+				if (uartScanf("%f",&KT) == false){
+					printf("not format.\r\n");
+					continue;
+				}
+				ms.setKT(KT);
+				break;
+			}
 			break;
 		default:
 			printf("Not Command\r\n");

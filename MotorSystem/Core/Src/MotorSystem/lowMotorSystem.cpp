@@ -159,7 +159,7 @@ void lowMotorSystem::setDirection(int dir){
 }
 
 void lowMotorSystem::setPPR(int ppr){
-	this->NotImplemented(__FILE__,__LINE__);
+	ms.NotImplemented(__FILE__,__LINE__);
 }
 
 float lowMotorSystem::getCurrent(void){
@@ -196,13 +196,8 @@ void lowMotorSystem::sendMessage(uint32_t sid,uint32_t rtr,uint32_t dlc,uint8_t*
 	HAL_CAN_AddTxMessage(&hcan,&header,data,&transmit_mailbox);
 }
 
-void lowMotorSystem::NotImplemented(const char* file,int line){
-	printf("Not Implemented Error: %s:[%d]\r\n",file,line);
-	Error_Handler();
-}
-
 void lowMotorSystem::ErrorHandler(void){
-	Error_Handler();
+	//Error_Handler();
 }
 
 void lowMotorSystem::controlTick(void) {

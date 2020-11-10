@@ -84,6 +84,11 @@ void lowMotorSystem::__can_recive(CAN_HandleTypeDef* hcan){
 
 }
 
+void lowMotorSystem::ErrorHandler(){
+	printf("Error Recive\r\n");
+	Error_Handler();
+}
+
 void __motorsystem_can_recive(CAN_HandleTypeDef* hcan){
 	lms.__can_recive(hcan);
 }

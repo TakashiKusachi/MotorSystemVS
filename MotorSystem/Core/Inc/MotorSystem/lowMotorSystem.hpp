@@ -50,8 +50,6 @@ public:
 
 	void sendMessage(uint32_t sid,uint32_t rtr,uint32_t dlc,uint8_t* data) override;
 
-	void NotImplemented(const char*,int) override;
-
 	void ErrorHandler(void) override;
 
 	void controlTick(void);

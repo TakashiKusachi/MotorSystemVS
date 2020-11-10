@@ -20,6 +20,7 @@ typedef enum{
 	// = 0x03,
 	SET_MODE = 0x04,				/** 0b0 00 0 0100 */
 	// 0x05 ~ 0x13
+	SEND_ERROR = 0x13,				/** 0b0 00 1 0011 */
 	GET_MODE = 0x14,				/** 0b0 00 1 0100 */
 	SET_VCC = 0x45,					/** 0b0 10 0 0101 */
 	SET_PPR = 0x46,					/** 0b0 10 0 0110 */

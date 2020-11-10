@@ -21,6 +21,7 @@ namespace MotorSystem{
 	class lowMotorSystem{
 	public:
 		virtual void sendMessage(unsigned long sid,unsigned long rtr,unsigned long dlc, unsigned char* data) = 0;
+		virtual void ErrorHandler(void) = 0;
 	};
 
 	class MotorSystem:public IMotorSystem{

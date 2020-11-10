@@ -71,15 +71,20 @@ namespace MotorSystem{
 		virtual void sendMessage(unsigned long sid,unsigned long rtr,unsigned long dlc,unsigned char* data) = 0;
 
 		/**
+		 * エラー発生によるlowレイヤー処理。
 		 *
-		 */
-		virtual void NotImplemented(const char*,int) = 0;
-
-		/**
-		 *
+		 * エラーが発生した際にハードウェア側で行う処理（例えばLEDを光らせたり、
+		 * 音を鳴らしたり。モータはMotorSystem側で停止するので不必要）。
+		 * ErrrorHandlerはブロッキングし、処理は戻らないようにすること
 		 */
 		virtual void ErrorHandler(void) = 0;
 
+		/**
+		 * マイコンのリセット
+		 *
+		 * Hostからの指示でマイコンのリセットを行います。
+		 * ソフトウェアリセット。
+		 */
 		virtual void reset(void)=0;
 	};
 
@@ -101,6 +106,7 @@ namespace MotorSystem{
 		 * internal parameters
 		 */
 		MOTORSYSTEM_STATE state;
+		error_state estate;
 
 		/**
 		 * internal set duty method.
@@ -166,6 +172,10 @@ namespace MotorSystem{
 
 		void controlTick(void);
 		void parseCANMessage(unsigned long id, bool rtr,unsigned char dlc,unsigned char* data);
+
+		void sendErrorMessage(void);
+		void NotImplemented(const char*,long);
+		void IlligalModeChange(const char*,long);
 
 	};
 }

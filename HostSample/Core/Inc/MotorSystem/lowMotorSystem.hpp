@@ -28,6 +28,8 @@ public:
 	void sendMessage(unsigned long sid,unsigned long rtr,unsigned long dlc, unsigned char* data) override;
 	void setMotorSystemInstance(MotorSystem::MotorSystem*);
 
+	void ErrorHandler(void) override;
+
 	void __can_recive(CAN_HandleTypeDef* hcan);
 };
 

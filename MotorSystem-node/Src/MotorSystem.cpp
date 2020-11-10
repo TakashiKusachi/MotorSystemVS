@@ -11,7 +11,9 @@
 #include <stddef.h> // NULL
 #include "../MotorSystem/MotorSystem.hpp"
 
-#define NOT_IMPLEMENTED_ERROR() this->low->NotImplemented(__FILE__,__LINE__)
+
+#define NOT_IMPLEMENTED_ERROR() this->NotImplemented(__FILE__,__LINE__)
+#define ILLIGAL_MODE_CHANGE() this->IlligalModeChange(__FILE__,__LINE__)
 
 namespace MotorSystem
 {
@@ -26,6 +28,7 @@ namespace MotorSystem
 		this->low = NULL;
 		this->voltage = 0;
 		this->state = NOT_INITIALIZED;
+		this->estate = NOT_ERROR;
 	}
 
 	/**
@@ -53,6 +56,11 @@ namespace MotorSystem
 		bool illegalStateChange = false;
 
 		if(state == SYSTEM_RESET)this->low->reset();
+		if(state == ERROR_MODE){
+			this->state = state;
+			this->__setDuty(0.0);
+			return;
+		}
 
 		switch(current){
 
@@ -94,7 +102,7 @@ namespace MotorSystem
 		 * Illegal state change.
 		 */
 		if (illegalStateChange){
-			this->low->ErrorHandler();
+			ILLIGAL_MODE_CHANGE();
 		}
 
 		/**
@@ -110,6 +118,7 @@ namespace MotorSystem
 		case DUTY:
 			break;
 		case VELOCITY:
+			this->speedControler.resetVariable();
 			break;
 		}
 
@@ -166,7 +175,7 @@ namespace MotorSystem
 			this->__setDuty(duty);
 		} else {
 			/** Illegal operation*/
-			this->low->ErrorHandler();
+			NOT_IMPLEMENTED_ERROR();
 		}
 	}
 
@@ -181,7 +190,7 @@ namespace MotorSystem
 			this->speed = vel;
 		}else {
 			/** Illegal operation*/
-			this->low->ErrorHandler();
+			NOT_IMPLEMENTED_ERROR();
 		}
 
 	}
@@ -319,6 +328,25 @@ namespace MotorSystem
 				break;
 			}
 		}
+	}
 
+	void MotorSystem::sendErrorMessage(void){
+		unsigned char data[8];
+		data[0] = this->estate;
+		this->low->sendMessage(CAN_MESSAGE_MAKE_CMD(MOTORSYSTEM_CMD::SEND_ERROR,this->low->getID()), 0, 1, data);
+	}
+
+	void MotorSystem::NotImplemented(const char* filename,long no){
+		this->setMode(MOTORSYSTEM_STATE::ERROR_MODE);
+		this->estate = NOT_IMPLEMENTED;
+		this->sendErrorMessage();
+		this->low->ErrorHandler();
+	}
+
+	void MotorSystem::IlligalModeChange(const char* filename,long no){
+		this->setMode(MOTORSYSTEM_STATE::ERROR_MODE);
+		this->estate = ILLIGAL_MODE_CHANGE;
+		this->sendErrorMessage();
+		this->low->ErrorHandler();
 	}
 }
