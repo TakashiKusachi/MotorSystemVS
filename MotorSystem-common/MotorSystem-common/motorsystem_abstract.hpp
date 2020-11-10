@@ -1,8 +1,8 @@
-/*
- * motorsytem_abstract.hpp
+/** 
+ *	@file
  *
- *  Created on: 2020/11/07
- *      Author: 嵩
+ *  @date Created on: 2020/11/07
+ *  @Author TakashiKusachi
  */
 
 #ifndef MOTORSYSTEM_ABSTRACT_HPP_
@@ -14,17 +14,22 @@
 #include "./motorsystem_mode.hpp"
 #include "motorsystem_util.hpp"
 
-#define interface class
-namespace MotorSystem{
+/**
+ *	@namespace
+ * 	@brief
+ */
+namespace nsMotorSystem{
 
 	/**
+	 * @class
+	 *
 	 * モータシステムの基本抽象クラス
 	 *
 	 * ホストスレーブ関係なく共通して使用し、MotorSystemクラスがなすべき処理をインターフェース示すクラス。
 	 * MotorSystemを使う処理（クラス）は、特別な処理をしない限りはこのインターフェースクラスを用いればよいことになる。
 	 * インターフェースという概念については、適当に調べてください。
 	 */
-	interface IMotorSystem{
+	class IMotorSystem{
 	public:
 
 		/**

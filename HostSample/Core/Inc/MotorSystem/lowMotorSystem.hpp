@@ -13,10 +13,10 @@
 
 #define MAX_NUMBER_OF_MS_INSTANCE 16
 
-class lowMotorSystem:public MotorSystem::lowMotorSystem{
+class lowMotorSystem:public nsMotorSystem::nsHost::lowMotorSystem{
 
 	int num_instance;
-	MotorSystem::MotorSystem* instances[MAX_NUMBER_OF_MS_INSTANCE];
+	nsMotorSystem::nsHost::MotorSystem* instances[MAX_NUMBER_OF_MS_INSTANCE];
 
 public:
 	lowMotorSystem(void){
@@ -26,7 +26,7 @@ public:
 	void init();
 	void start(void);
 	void sendMessage(unsigned long sid,unsigned long rtr,unsigned long dlc, unsigned char* data) override;
-	void setMotorSystemInstance(MotorSystem::MotorSystem*);
+	void setMotorSystemInstance(nsMotorSystem::nsHost::MotorSystem*);
 
 	void ErrorHandler(void) override;
 

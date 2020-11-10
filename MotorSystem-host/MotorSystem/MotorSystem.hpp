@@ -1,8 +1,6 @@
-/*
- * MotorSystem.hpp
- *
- *  Created on: Nov 3, 2020
- *      Author: 嵩
+/**
+ * @file MotorSystem.hpp
+ * @brief test
  */
 
 #ifndef MOTORSYSTEM_HPP_
@@ -14,17 +12,32 @@
 
 #ifdef __cplusplus
 /** not export c source code */
-namespace MotorSystem{
 
-	class MotorSystem;
+/**
+ * @namespace
+ */
+namespace nsMotorSystem{
+/**
+ * @namespace
+ */
+namespace nsHost{
 
+	class HostMotorSystem;
+
+	/**
+	 * @interface
+	 */
 	class lowMotorSystem{
 	public:
 		virtual void sendMessage(unsigned long sid,unsigned long rtr,unsigned long dlc, unsigned char* data) = 0;
 		virtual void ErrorHandler(void) = 0;
 	};
 
-	class MotorSystem:public IMotorSystem{
+	/**
+	 * @class HostMotorSystem
+	 * @brief test
+	 */
+	class HostMotorSystem:public IMotorSystem{
 		lowMotorSystem* low;
 		#define CHECK_LOWHANDLER(t) if( t->low == NULL) this->low->ErrorHandler();
 
@@ -50,7 +63,7 @@ namespace MotorSystem{
 		void sendMessage(MOTORSYSTEM_CMD cmd,int rtr,int dlc,unsigned char* data);
 
 	public:
-		MotorSystem();
+		HostMotorSystem();
 
 		/**
 		 * initialize
@@ -85,13 +98,13 @@ namespace MotorSystem{
 		float getTorque(void) override;
 
 		float getCurrent(void) override;
-;
 
 		void parseCANMessage(unsigned long id, bool rtr,unsigned char dlc,unsigned char* data);
 
 		void reset(void);
 		int getID(void);
 	};
+}
 }
 
 

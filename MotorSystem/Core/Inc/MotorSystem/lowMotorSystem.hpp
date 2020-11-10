@@ -13,7 +13,7 @@
 /**
  * hardware control class for motor system.
  */
-class lowMotorSystem: public MotorSystem::lowMotorSystem{
+class lowMotorSystem: public nsMotorSystem::nsNode::lowMotorSystem{
 	float tick_time;
 	float countPerRadius;
 	float speed;

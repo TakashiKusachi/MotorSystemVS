@@ -39,8 +39,9 @@ extern "C"{
 	extern TIM_HandleTypeDef htim17;
 }
 
+using nsMotorSystem::nsNode::NodeMotorSystem;
 lowMotorSystem lms(10.0/*[ms]*/,256);
-MotorSystem::MotorSystem ms;
+NodeMotorSystem ms;
 
 #ifdef DEBUG
 namespace debug_functions{

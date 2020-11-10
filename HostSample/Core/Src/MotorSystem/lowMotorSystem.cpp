@@ -14,6 +14,7 @@ extern "C"{
 	extern CAN_HandleTypeDef hcan;
 }
 
+using nsMotorSystem::nsHost::MotorSystem;
 
 extern lowMotorSystem lms;
 
@@ -69,7 +70,7 @@ void lowMotorSystem::sendMessage(unsigned long sid,unsigned long rtr,unsigned lo
 	}
 }
 
-void lowMotorSystem::setMotorSystemInstance(MotorSystem::MotorSystem* ms){
+void lowMotorSystem::setMotorSystemInstance(MotorSystem* ms){
 	this->instances[this->num_instance] = ms;
 	this->num_instance++;
 }

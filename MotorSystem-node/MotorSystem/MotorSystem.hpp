@@ -16,7 +16,8 @@
 
 #ifdef __cplusplus
 /** not export c source code */
-namespace MotorSystem{
+namespace nsMotorSystem{
+namespace nsNode{
 
 	/**
 	 * Interface of peripheral for MotorSystem.
@@ -88,7 +89,7 @@ namespace MotorSystem{
 		virtual void reset(void)=0;
 	};
 
-	class MotorSystem:public IMotorSystem{
+	class NodeMotorSystem:public IMotorSystem{
 		lowMotorSystem* low;
 		#define CHECK_LOWHANDLER(t) if( t->low == NULL) this->low->ErrorHandler();
 
@@ -134,7 +135,7 @@ namespace MotorSystem{
 		}
 
 	public:
-		MotorSystem();
+		NodeMotorSystem();
 
 		/**
 		 * initialize
@@ -178,6 +179,7 @@ namespace MotorSystem{
 		void IlligalModeChange(const char*,long);
 
 	};
+}
 }
 
 #define MOTORSYSTEM_DEFAULT_K 0.1

@@ -8,7 +8,7 @@
 #ifndef INC_MOTORSYSTEM_MOTORSYSTEM_UTIL_HPP_
 #define INC_MOTORSYSTEM_MOTORSYSTEM_UTIL_HPP_
 
-namespace MotorSystem{
+namespace nsMotorSystem{
 
 	typedef enum{
 		RS_OK,

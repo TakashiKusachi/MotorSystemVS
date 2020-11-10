@@ -13,8 +13,10 @@
 #include "MotorSystem/MotorSystem.hpp"
 #include "./MotorSystem/lowMotorSystem.hpp"
 
+using nsMotorSystem::nsHost::MotorSystem;
+
 lowMotorSystem lms;
-MotorSystem::MotorSystem ms;
+MotorSystem ms;
 
 void consoleControl(void);
 
