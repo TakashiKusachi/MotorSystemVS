@@ -1,8 +1,7 @@
 /*
- * motorsystem-cmd.hpp
+ * @file motorsystem-cmd.hpp
  *
- *  Created on: Nov 3, 2020
- *      Author: 嵩
+ * @author TakashiKusachi
  */
 
 #ifndef MOTORSYSTEM_MODE_HPP_
@@ -12,16 +11,27 @@
 extern "C"{
 #endif
 
-typedef enum{
-	NOT_INITIALIZED,
-	INITIALIZED,
-	READY,
-	DUTY,
-	VELOCITY,
+/**
+ *
+ */
+namespace nsMotorSystem{
 
-	ERROR_MODE,
-	SYSTEM_RESET,
+/**
+ * @brief モータの状態ならびにモードのenum
+ * @details 詳細はwiki見た方がいい。
+ */
+typedef enum{
+	NOT_INITIALIZED,	/**< 未初期化状態 */
+	INITIALIZED,		/**< 初期化済み状態(Not begin) */
+	READY,				/**< Begin後 */
+	DUTY,				/**< Duty制御モード */
+	VELOCITY,			/**< 速度制御モード */
+
+	ERROR_MODE,			/**< エラー発生 */
+	SYSTEM_RESET,		/**< システムリセット */
 }MOTORSYSTEM_STATE;
+
+}
 
 #define IS_MODE_ACTIVE(mode) ((mode == DUTY) || (mode == VELOCITY))
 #define IS_NOT_BEGIN(mode) ((mode == NOT_INITIALIZED) || (mode==INITIALIZED))

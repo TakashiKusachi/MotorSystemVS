@@ -28,6 +28,9 @@ int dumy_printf(const char* format,...){
 #include "MotorSystem/MotorSystem.hpp"
 #include "MotorSystem/lowMotorSystem.hpp"
 
+using nsMotorSystem::MOTORSYSTEM_CMD;
+using nsMotorSystem::MOTORSYSTEM_STATE;
+
 extern "C"{
 /*
  * external handler from main.c
@@ -39,9 +42,9 @@ extern "C"{
 	extern TIM_HandleTypeDef htim17;
 }
 
-using nsMotorSystem::nsNode::NodeMotorSystem;
+using nsMotorSystem::nsNode::MotorSystem;
 lowMotorSystem lms(10.0/*[ms]*/,256);
-NodeMotorSystem ms;
+MotorSystem ms;
 
 #ifdef DEBUG
 namespace debug_functions{
@@ -324,23 +327,23 @@ namespace debug_functions{
 		converter = (ConverterType*)data;
 
 		switch(CAN_MESSAGE_GET_CMD(header.StdId)){
-		case GET_MODE:
+		case MOTORSYSTEM_CMD::GET_MODE:
 			mode = converter->MODE.mode;
 			recive_get_mode = true;
 			break;
-		case GET_VELOCITY:
+		case MOTORSYSTEM_CMD::GET_VELOCITY:
 			velocity = converter->F.data;
 			recive_get_velocity = true;
 			break;
-		case GET_DUTY:
+		case MOTORSYSTEM_CMD::GET_DUTY:
 			duty = converter->F.data;
 			recive_get_duty = true;
 			break;
-		case GET_CURRENT:
+		case MOTORSYSTEM_CMD::GET_CURRENT:
 			current = converter->F.data;
 			recive_get_current = true;
 			break;
-		case BEGIN:
+		case MOTORSYSTEM_CMD::BEGIN:
 			recive_begin= true;
 			break;
 		}

@@ -1,24 +1,34 @@
 /*
- * motorSystem_util.hpp
+ * @file motorSystem_util.hpp
  *
- *  Created on: Oct 11, 2020
- *      Author: 嵩
+ * @author TakashiKusachi
  */
 
 #ifndef INC_MOTORSYSTEM_MOTORSYSTEM_UTIL_HPP_
 #define INC_MOTORSYSTEM_MOTORSYSTEM_UTIL_HPP_
 
+/**
+ *
+ */
 namespace nsMotorSystem{
 
+	/**
+	 * @brief コマンドの成功・失敗のリターン値
+	 * @note 現在つかってない。
+	 */
 	typedef enum{
-		RS_OK,
-		RS_ERROR,
+		RS_OK,			/**< */
+		RS_ERROR,		/**< */
 	}returnState;
 
+	/**
+	 * @brief エラー原因のenum
+	 * @note いまほとんど活用できてない。
+	 */
 	typedef enum{
-		NOT_IMPLEMENTED,
-		ILLIGAL_MODE_CHANGE,
-		NOT_ERROR,
+		NOT_IMPLEMENTED,		/**< 未実装命令エラー */
+		ILLIGAL_MODE_CHANGE,	/**< 不許可状態遷移 */
+		NOT_ERROR,				/**< 非エラー */
 	}error_state;
 
 }

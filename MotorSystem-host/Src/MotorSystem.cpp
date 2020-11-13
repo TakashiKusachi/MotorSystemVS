@@ -29,20 +29,20 @@ namespace nsHost{
 	/**
 	 *
 	 */
-	HostMotorSystem::HostMotorSystem(void){
+	MotorSystem::MotorSystem(void){
 
 	}
 
-	void HostMotorSystem::sendMessage(MOTORSYSTEM_CMD cmd,int rtr,int dlc,unsigned char* data){
+	void MotorSystem::sendMessage(MOTORSYSTEM_CMD cmd,int rtr,int dlc,unsigned char* data){
 		this->low->sendMessage(((cmd << 4) | this->getID()),rtr,dlc,data);
 	}
 
-	void HostMotorSystem::init(lowMotorSystem* lms,int id){
+	void MotorSystem::init(lowMotorSystem* lms,int id){
 		this->low = lms;
 		this->id = id;
 	}
 
-	void HostMotorSystem::begin(){
+	void MotorSystem::begin(){
 		unsigned char dumy[1];
 		this->recive_begin = false;
 		this->sendMessage(MOTORSYSTEM_CMD::BEGIN,1, 0, dumy);
@@ -50,13 +50,13 @@ namespace nsHost{
 	}
 
 
-	void HostMotorSystem::setMode(MOTORSYSTEM_STATE state){
+	void MotorSystem::setMode(MOTORSYSTEM_STATE state){
 		ConverterType converter;
 		converter.MODE.mode = state;
 		this->sendMessage(MOTORSYSTEM_CMD::SET_MODE,0, 1, converter.data);
 	}
 
-	MOTORSYSTEM_STATE HostMotorSystem::getMode(void){
+	MOTORSYSTEM_STATE MotorSystem::getMode(void){
 		ConverterType converter;
 		this->recive_mode = false;
 		this->sendMessage(MOTORSYSTEM_CMD::GET_MODE,1, 0, converter.data);
@@ -64,43 +64,43 @@ namespace nsHost{
 		return this->mode;
 	}
 
-	returnState HostMotorSystem::setVoltage(float vol){
+	returnState MotorSystem::setVoltage(float vol){
 		ConverterType converter;
 		converter.F.data = vol;
 		this->sendMessage(MOTORSYSTEM_CMD::SET_VCC,0, 4, converter.data);
 	}
 
-	returnState HostMotorSystem::setPPR(float ppr){
+	returnState MotorSystem::setPPR(float ppr){
 		ConverterType converter;
 		converter.F.data = ppr;
 		this->sendMessage(MOTORSYSTEM_CMD::SET_PPR,0, 4, converter.data);
 	}
 
-	returnState HostMotorSystem::setKT(float kt){
+	returnState MotorSystem::setKT(float kt){
 		ConverterType converter;
 		converter.F.data = kt;
 		this->sendMessage(MOTORSYSTEM_CMD::SET_KT,0, 4, converter.data);
 	}
 
-	returnState HostMotorSystem::setVGAIN_K(float k){
+	returnState MotorSystem::setVGAIN_K(float k){
 		ConverterType converter;
 		converter.F.data = k;
 		this->sendMessage(MOTORSYSTEM_CMD::SET_VGAIN_K,0, 4, converter.data);
 	}
 
-	returnState HostMotorSystem::setVGAIN_TI(float ti){
+	returnState MotorSystem::setVGAIN_TI(float ti){
 		ConverterType converter;
 		converter.F.data = ti;
 		this->sendMessage(MOTORSYSTEM_CMD::SET_VGAIN_TI,0, 4, converter.data);
 	}
 
-	returnState HostMotorSystem::setVGAIN_TD(float td){
+	returnState MotorSystem::setVGAIN_TD(float td){
 		ConverterType converter;
 		converter.F.data = td;
 		this->sendMessage(MOTORSYSTEM_CMD::SET_VGAIN_TD,0, 4, converter.data);
 	}
 
-	returnState HostMotorSystem::setDuty(float duty){
+	returnState MotorSystem::setDuty(float duty){
 		ConverterType converter;
 		converter.F.data = duty;
 		this->sendMessage(MOTORSYSTEM_CMD::SET_DUTY,0, 4, converter.data);
@@ -108,7 +108,7 @@ namespace nsHost{
 
 	}
 
-	float HostMotorSystem::getDuty(void){
+	float MotorSystem::getDuty(void){
 		ConverterType converter;
 		this->recive_duty = false;
 		this->sendMessage(MOTORSYSTEM_CMD::GET_DUTY,1, 0, converter.data);
@@ -116,14 +116,14 @@ namespace nsHost{
 		return this->duty;
 	}
 
-	returnState HostMotorSystem::setVelocity(float vel){
+	returnState MotorSystem::setVelocity(float vel){
 		ConverterType converter;
 		converter.F.data = vel;
 		this->sendMessage(MOTORSYSTEM_CMD::SET_VELOCITY,0, 4, converter.data);
 		return RS_OK;
 	}
 
-	float HostMotorSystem::getVelocity(void){
+	float MotorSystem::getVelocity(void){
 		ConverterType converter;
 		this->recive_velocity = false;
 		this->sendMessage(MOTORSYSTEM_CMD::GET_VELOCITY,1, 0, converter.data);
@@ -131,14 +131,14 @@ namespace nsHost{
 		return this->velocity;
 	}
 
-	returnState HostMotorSystem::setTorque(float tor){
+	returnState MotorSystem::setTorque(float tor){
 		ConverterType converter;
 		converter.F.data = tor;
 		this->sendMessage(MOTORSYSTEM_CMD::SET_TORQUE,0, 4, converter.data);
 		return RS_OK;
 	}
 
-	float HostMotorSystem::getTorque(void){
+	float MotorSystem::getTorque(void){
 		ConverterType converter;
 		this->recive_torque = false;
 		this->sendMessage(MOTORSYSTEM_CMD::GET_TORQUE,1, 0, converter.data);
@@ -146,7 +146,7 @@ namespace nsHost{
 		return this->torque;
 	}
 
-	float HostMotorSystem::getCurrent(void){
+	float MotorSystem::getCurrent(void){
 		ConverterType converter;
 		this->recive_current = false;
 		this->sendMessage(MOTORSYSTEM_CMD::GET_CURRENT,1, 0, converter.data);
@@ -154,7 +154,7 @@ namespace nsHost{
 		return this->current;
 	}
 
-	void HostMotorSystem::parseCANMessage(unsigned long id, bool rtr,unsigned char dlc,unsigned char* data){
+	void MotorSystem::parseCANMessage(unsigned long id, bool rtr,unsigned char dlc,unsigned char* data){
 		ConverterType* converter;
 		converter = (ConverterType*)data;
 
@@ -190,12 +190,12 @@ namespace nsHost{
 		}
 	}
 
-	void HostMotorSystem::reset(void){
+	void MotorSystem::reset(void){
 		this->setMode(MOTORSYSTEM_STATE::SYSTEM_RESET);
 
 	}
 
-	int HostMotorSystem::getID(void){
+	int MotorSystem::getID(void){
 		return this->id;
 	}
 }

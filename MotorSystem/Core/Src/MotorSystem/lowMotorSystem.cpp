@@ -24,9 +24,9 @@ extern "C"{
 	extern TIM_HandleTypeDef htim17;
 }
 
-using nsMotorSystem::nsNode::NodeMotorSystem;
+using nsMotorSystem::nsNode::MotorSystem;
 extern lowMotorSystem lms;
-extern NodeMotorSystem ms;
+extern MotorSystem ms;
 
 /**
  * Forward declaration

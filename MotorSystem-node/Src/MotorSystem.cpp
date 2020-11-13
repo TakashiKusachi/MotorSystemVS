@@ -11,12 +11,18 @@
 #include <stddef.h> // NULL
 #include "../MotorSystem/MotorSystem.hpp"
 
-
+/**
+ * @brief 実装外の処理を行ったときに行うメソッド
+ * @details エラーが起こった場所をわかるようにするために、__FILE__マクロと__LINE__マクロを入力するようになっています。
+ */
 #define NOT_IMPLEMENTED_ERROR() this->NotImplemented(__FILE__,__LINE__)
+/**
+ * @brief 許可されていない状態遷移を行ったときに行うメソッド
+ * @details エラーが起こった場所をわかるようにするために、__FILE__マクロと__LINE__マクロを入力するようになっています。
+ */
 #define ILLIGAL_MODE_CHANGE() this->IlligalModeChange(__FILE__,__LINE__)
 
 /**
- * @namespace
  */
 namespace nsMotorSystem
 {
@@ -24,7 +30,7 @@ namespace nsNode{
 	/**
 	 * constructor
 	 */
-	NodeMotorSystem::NodeMotorSystem(void):
+	MotorSystem::MotorSystem(void):
 			speedControler(	MOTORSYSTEM_DEFAULT_K,
 							MOTORSYSTEM_DEFAULT_Ti,
 							MOTORSYSTEM_DEFAULT_Td,
@@ -38,14 +44,14 @@ namespace nsNode{
 	/**
 	 * Initialize
 	 */
-	returnState NodeMotorSystem::init(lowMotorSystem* low){
+	returnState MotorSystem::init(lowMotorSystem* low){
 		this->low = low;
 		this->duty = 0;
 		this->setMode(INITIALIZED);
 		return RS_OK;
 	}
 
-	void NodeMotorSystem::begin(void){
+	void MotorSystem::begin(void){
 		if(this->state != INITIALIZED)this->low->ErrorHandler();
 		this->low->begin();
 		this->setMode(READY);
@@ -55,7 +61,7 @@ namespace nsNode{
 	/**
 	 *
 	 */
-	void NodeMotorSystem::setMode(MOTORSYSTEM_STATE state){
+	void MotorSystem::setMode(MOTORSYSTEM_STATE state){
 		MOTORSYSTEM_STATE current = this->state;
 		bool illegalStateChange = false;
 
@@ -146,35 +152,35 @@ namespace nsNode{
 		}
 	}
 
-	MOTORSYSTEM_STATE NodeMotorSystem::getMode(void){
+	MOTORSYSTEM_STATE MotorSystem::getMode(void){
 		return this->state;
 	}
 
-	returnState NodeMotorSystem::setVoltage(float vol){
+	returnState MotorSystem::setVoltage(float vol){
 		this->supplyVoltage = vol;
 	}
 
-	returnState NodeMotorSystem::setPPR(float ppr){
+	returnState MotorSystem::setPPR(float ppr){
 		this->low->setPPR((int)ppr);
 	}
 
-	returnState NodeMotorSystem::setKT(float kt){
+	returnState MotorSystem::setKT(float kt){
 		NOT_IMPLEMENTED_ERROR();
 	}
 
-	returnState NodeMotorSystem::setVGAIN_K(float k){
+	returnState MotorSystem::setVGAIN_K(float k){
 		this->speedControler.setK(k);
 	}
 
-	returnState NodeMotorSystem::setVGAIN_TI(float ti){
+	returnState MotorSystem::setVGAIN_TI(float ti){
 		this->speedControler.setTi(ti);
 	}
 
-	returnState NodeMotorSystem::setVGAIN_TD(float td){
+	returnState MotorSystem::setVGAIN_TD(float td){
 		this->speedControler.setTd(td);
 	}
 
-	returnState NodeMotorSystem::setDuty(float duty){
+	returnState MotorSystem::setDuty(float duty){
 		if (this->state == DUTY){
 			this->__setDuty(duty);
 		} else {
@@ -183,13 +189,13 @@ namespace nsNode{
 		}
 	}
 
-	float NodeMotorSystem::getDuty(void){
+	float MotorSystem::getDuty(void){
 		CHECK_LOWHANDLER(this);
 
 		return this->duty;
 	}
 
-	returnState NodeMotorSystem::setVelocity(float vel){
+	returnState MotorSystem::setVelocity(float vel){
 		if (this->state == VELOCITY){
 			this->speed = vel;
 		}else {
@@ -199,27 +205,33 @@ namespace nsNode{
 
 	}
 
-	float NodeMotorSystem::getVelocity(void){
+	float MotorSystem::getVelocity(void){
 		if(this->state)
 		CHECK_LOWHANDLER(this);
 		return this->low->getSpeed();
 	}
 
-	returnState NodeMotorSystem::setTorque(float tor){
+	/**
+	 * @note Not Implemented
+	 */
+	returnState MotorSystem::setTorque(float tor){
 		NOT_IMPLEMENTED_ERROR();
 	}
 
-	float NodeMotorSystem::getTorque(void){
+	/**
+	 * @note Not Implemented
+	 */
+	float MotorSystem::getTorque(void){
 		NOT_IMPLEMENTED_ERROR();
 	}
 
-	float NodeMotorSystem::getCurrent(void){
+	float MotorSystem::getCurrent(void){
 		CHECK_LOWHANDLER(this);
 		if(IS_NOT_BEGIN(this->state))return 0;
 		return this->low->getCurrent();
 	}
 
-	void NodeMotorSystem::controlTick(void){
+	void MotorSystem::controlTick(void){
 		CHECK_LOWHANDLER(this);
 
 		/**
@@ -234,7 +246,7 @@ namespace nsNode{
 		}
 	}
 
-	void NodeMotorSystem::parseCANMessage(unsigned long id, bool rtr,unsigned char dlc,unsigned char* data){
+	void MotorSystem::parseCANMessage(unsigned long id, bool rtr,unsigned char dlc,unsigned char* data){
 		typedef union{
 			struct{
 				float data;
@@ -334,20 +346,20 @@ namespace nsNode{
 		}
 	}
 
-	void NodeMotorSystem::sendErrorMessage(void){
+	void MotorSystem::sendErrorMessage(void){
 		unsigned char data[8];
 		data[0] = this->estate;
 		this->low->sendMessage(CAN_MESSAGE_MAKE_CMD(MOTORSYSTEM_CMD::SEND_ERROR,this->low->getID()), 0, 1, data);
 	}
 
-	void NodeMotorSystem::NotImplemented(const char* filename,long no){
+	void MotorSystem::NotImplemented(const char* filename,long no){
 		this->setMode(MOTORSYSTEM_STATE::ERROR_MODE);
 		this->estate = NOT_IMPLEMENTED;
 		this->sendErrorMessage();
 		this->low->ErrorHandler();
 	}
 
-	void NodeMotorSystem::IlligalModeChange(const char* filename,long no){
+	void MotorSystem::IlligalModeChange(const char* filename,long no){
 		this->setMode(MOTORSYSTEM_STATE::ERROR_MODE);
 		this->estate = ILLIGAL_MODE_CHANGE;
 		this->sendErrorMessage();

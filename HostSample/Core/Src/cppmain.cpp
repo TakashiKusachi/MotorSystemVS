@@ -14,6 +14,7 @@
 #include "./MotorSystem/lowMotorSystem.hpp"
 
 using nsMotorSystem::nsHost::MotorSystem;
+using nsMotorSystem::MOTORSYSTEM_STATE;
 
 lowMotorSystem lms;
 MotorSystem ms;
