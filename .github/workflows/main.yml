@@ -23,7 +23,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         with:
-          repository: dev-docs
+          ref: dev-docs
 
       - name: merge dev-docs from main
         uses: devmasx/merge-branch@v1.3.1
