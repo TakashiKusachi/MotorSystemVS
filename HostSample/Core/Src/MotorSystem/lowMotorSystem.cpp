@@ -16,16 +16,16 @@ extern "C"{
 
 using nsMotorSystem::nsHost::MotorSystem;
 
-extern lowMotorSystem lms;
+extern host_lowMotorSystem lms;
 
 extern void __motorsystem_can_recive(CAN_HandleTypeDef* hcan);
 extern void __makeFilterConfig(CAN_FilterTypeDef* sFilterConfig);
 
-void lowMotorSystem::init(){
+void host_lowMotorSystem::init(){
 	HAL_CAN_RegisterCallback(&hcan,HAL_CAN_RX_FIFO0_MSG_PENDING_CB_ID,__motorsystem_can_recive);
 }
 
-void lowMotorSystem::start(){
+void host_lowMotorSystem::start(){
 	CAN_FilterTypeDef sFilterConfig;
 
 	printf("CAN Start: ");
@@ -54,7 +54,7 @@ void lowMotorSystem::start(){
 
 }
 
-void lowMotorSystem::sendMessage(unsigned long sid,unsigned long rtr,unsigned long dlc, unsigned char* data){
+void host_lowMotorSystem::sendMessage(unsigned long sid,unsigned long rtr,unsigned long dlc, unsigned char* data){
 	uint32_t transmit_mailbox = 0;
 	HAL_StatusTypeDef state;
 
@@ -70,12 +70,12 @@ void lowMotorSystem::sendMessage(unsigned long sid,unsigned long rtr,unsigned lo
 	}
 }
 
-void lowMotorSystem::setMotorSystemInstance(MotorSystem* ms){
+void host_lowMotorSystem::setMotorSystemInstance(MotorSystem* ms){
 	this->instances[this->num_instance] = ms;
 	this->num_instance++;
 }
 
-void lowMotorSystem::__can_recive(CAN_HandleTypeDef* hcan){
+void host_lowMotorSystem::__can_recive(CAN_HandleTypeDef* hcan){
 	CAN_RxHeaderTypeDef header;
 	uint8_t data[8];
 	HAL_CAN_GetRxMessage(hcan,CAN_RX_FIFO0,&header,data);
@@ -85,7 +85,7 @@ void lowMotorSystem::__can_recive(CAN_HandleTypeDef* hcan){
 
 }
 
-void lowMotorSystem::ErrorHandler(){
+void host_lowMotorSystem::ErrorHandler(){
 	printf("Error Recive\r\n");
 	Error_Handler();
 }

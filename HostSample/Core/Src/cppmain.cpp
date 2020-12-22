@@ -16,7 +16,7 @@
 using nsMotorSystem::nsHost::MotorSystem;
 using nsMotorSystem::MOTORSYSTEM_STATE;
 
-lowMotorSystem lms;
+host_lowMotorSystem lms;
 MotorSystem ms;
 
 void consoleControl(void);
