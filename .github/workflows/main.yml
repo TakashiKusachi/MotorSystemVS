@@ -23,12 +23,24 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      - name: checkout of dev-docs branch
+        run: |
+          git checkout dev-docs
+          git merge master
+
+
       - name: Doxygen Build
         uses: mattnotmitt/doxygen-action@v1.2.1
         with:
           doxyfile-path: ./docs-src
           working-directory: ./
           enable-latex: false
+      
+      - name: deploy git pages
+        uses: peaceiris/action-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: dev-docs
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
