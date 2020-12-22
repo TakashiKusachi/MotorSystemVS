@@ -32,12 +32,6 @@ jobs:
         with:
           repository: dev-docs
 
-      - name: checkout of dev-docs branch
-        run: |
-          git checkout dev-docs
-          git merge master
-
-
       - name: Doxygen Build
         uses: mattnotmitt/doxygen-action@v1.2.1
         with:
