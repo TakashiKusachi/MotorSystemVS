@@ -21,16 +21,17 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: devmasx/merge-branch@v1.3.1
+      - uses: actions/checkout@v2
+        with:
+          repository: dev-docs
+
+      - name: merge dev-docs from main
+        uses: devmasx/merge-branch@v1.3.1
         with:
           type: now
           from_branch: master
           target_branch: dev_docs
           github_token: ${{ github.token }}
-          
-      - uses: actions/checkout@v2
-        with:
-          repository: dev-docs
 
       - name: Doxygen Build
         uses: mattnotmitt/doxygen-action@v1.2.1
