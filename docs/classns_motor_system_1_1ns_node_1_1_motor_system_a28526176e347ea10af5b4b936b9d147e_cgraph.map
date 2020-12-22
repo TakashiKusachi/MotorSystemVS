@@ -1,0 +1,4 @@
+<map id="nsMotorSystem::nsNode::MotorSystem::setVGAIN_TI" name="nsMotorSystem::nsNode::MotorSystem::setVGAIN_TI">
+<area shape="rect" id="node1" title="速度制御の積分時間設定関数" alt="" coords="5,5,212,47"/>
+<area shape="rect" id="node2" href="$class_p_i_d_1_1_p_i_d_controler.html#a48041728efbbb6ce42a946143d41d33b" title="Setter Ti." alt="" coords="260,5,403,47"/>
+</map>

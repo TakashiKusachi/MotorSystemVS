@@ -1,0 +1,4 @@
+<map id="nsMotorSystem::nsNode::MotorSystem::setVGAIN_K" name="nsMotorSystem::nsNode::MotorSystem::setVGAIN_K">
+<area shape="rect" id="node1" title="速度制御ゲインの設定関数" alt="" coords="5,5,208,47"/>
+<area shape="rect" id="node2" href="$class_p_i_d_1_1_p_i_d_controler.html#aa8db0cae19ce25a9247ba180a3ea02b2" title="Setter Gain." alt="" coords="256,13,427,39"/>
+</map>

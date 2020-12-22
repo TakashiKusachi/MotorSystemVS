@@ -13,13 +13,13 @@
 
 #define MAX_NUMBER_OF_MS_INSTANCE 16
 
-class lowMotorSystem:public nsMotorSystem::nsHost::lowMotorSystem{
+class host_lowMotorSystem:public nsMotorSystem::nsHost::lowMotorSystem{
 
 	int num_instance;
 	nsMotorSystem::nsHost::MotorSystem* instances[MAX_NUMBER_OF_MS_INSTANCE];
 
 public:
-	lowMotorSystem(void){
+	host_lowMotorSystem(void){
 		num_instance = 0;
 	}
 

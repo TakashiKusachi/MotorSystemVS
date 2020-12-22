@@ -1,0 +1,6 @@
+<map id="nsMotorSystem::nsNode::MotorSystem::sendErrorMessage" name="nsMotorSystem::nsNode::MotorSystem::sendErrorMessage">
+<area shape="rect" id="node1" title="エラーが発生したときにhostにエラーメッセージを送るための関数" alt="" coords="533,39,779,80"/>
+<area shape="rect" id="node2" href="$classns_motor_system_1_1ns_node_1_1_motor_system.html#ac8f44c810054a58d4902db2ed1e1728c" title="許可されていない状態遷移を行ったときに行うメソッド" alt="" coords="239,5,485,47"/>
+<area shape="rect" id="node3" href="$classns_motor_system_1_1ns_node_1_1_motor_system.html#a754877f816ac76b352ec1c8f52acbb98" title="実装外の処理を行ったときに行うメソッド" alt="" coords="245,71,479,112"/>
+<area shape="rect" id="node4" href="$classlow_motor_system.html#a85a182c6bdcc3b4ac7007bbbc58920e0" title="エンコーダのpulse数の設定関数" alt="" coords="5,78,191,105"/>
+</map>

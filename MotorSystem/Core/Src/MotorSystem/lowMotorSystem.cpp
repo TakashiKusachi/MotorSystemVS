@@ -31,11 +31,11 @@ extern MotorSystem ms;
 /**
  * Forward declaration
  */
-extern void __motorsystem_tim17_tick(TIM_HandleTypeDef* htim);
-extern void __motorsystem_can_recive(CAN_HandleTypeDef* hcan);
-extern void __makeFilterConfig(CAN_FilterTypeDef* sFilterConfig);
+extern void __host_motorsystem_tim17_tick(TIM_HandleTypeDef* htim);
+extern void __host_motorsystem_can_recive(CAN_HandleTypeDef* hcan);
+extern void __host_makeFilterConfig(CAN_FilterTypeDef* sFilterConfig);
 
-void __trigger(TIM_HandleTypeDef* htim);
+void __host_trigger(TIM_HandleTypeDef* htim);
 
 lowMotorSystem::lowMotorSystem(float tick_time, uint32_t PPR){
 	this->speed = 0;
@@ -54,10 +54,10 @@ void lowMotorSystem::init(TIM_HandleTypeDef* tick_htim){
 	//	Error_Handler();
 	//}
 	#endif
-	HAL_TIM_RegisterCallback(tick_htim,HAL_TIM_PERIOD_ELAPSED_CB_ID,__motorsystem_tim17_tick);
-	HAL_TIM_RegisterCallback(&htim15,HAL_TIM_TRIGGER_CB_ID,__trigger);
-	HAL_TIM_RegisterCallback(&htim15,HAL_TIM_IC_CAPTURE_CB_ID,__trigger);
-	HAL_CAN_RegisterCallback(&hcan,HAL_CAN_RX_FIFO0_MSG_PENDING_CB_ID,__motorsystem_can_recive);
+	HAL_TIM_RegisterCallback(tick_htim,HAL_TIM_PERIOD_ELAPSED_CB_ID,__host_motorsystem_tim17_tick);
+	HAL_TIM_RegisterCallback(&htim15,HAL_TIM_TRIGGER_CB_ID,__host_trigger);
+	HAL_TIM_RegisterCallback(&htim15,HAL_TIM_IC_CAPTURE_CB_ID,__host_trigger);
+	HAL_CAN_RegisterCallback(&hcan,HAL_CAN_RX_FIFO0_MSG_PENDING_CB_ID,__host_motorsystem_can_recive);
 }
 
 int lowMotorSystem::getID(void){
@@ -87,7 +87,7 @@ void lowMotorSystem::start(){
 
 
 	printf("CAN FilterConfigure: ");
-	__makeFilterConfig(&sFilterConfig);
+	__host_makeFilterConfig(&sFilterConfig);
 	if(HAL_CAN_ConfigFilter(&hcan,&sFilterConfig) != HAL_OK){
 		printf("Failure!\r\n");
 		Error_Handler();
@@ -213,13 +213,13 @@ void lowMotorSystem::reset(void){
 /**
  * callback funtions
  */
-void __motorsystem_tim17_tick(TIM_HandleTypeDef* htim){
+void __host_motorsystem_tim17_tick(TIM_HandleTypeDef* htim){
 	//printf("test callback\r\n");
 	lms.controlTick();
 	ms.controlTick();
 }
 
-void __motorsystem_can_recive(CAN_HandleTypeDef* hcan){
+void __host_motorsystem_can_recive(CAN_HandleTypeDef* hcan){
 	CAN_RxHeaderTypeDef header;
 	uint8_t data[8];
 	HAL_CAN_GetRxMessage(hcan,CAN_RX_FIFO0,&header,data);
@@ -231,7 +231,7 @@ void set16bitModeFilter_IDorMask(unsigned long* filteridmask, unsigned long stdi
 	*filteridmask  =  ((stdid & 0x07FF) << 5) | ((rtr & 0x0001) << 4) | ((ide & 0x0001) << 3) | ((exid & 0x00038000) >> 15);
 }
 
-void __makeFilterConfig(CAN_FilterTypeDef* sFilterConfig){
+void __host_makeFilterConfig(CAN_FilterTypeDef* sFilterConfig){
 
 	sFilterConfig->SlaveStartFilterBank = 0;
 	sFilterConfig->FilterActivation = CAN_FILTER_ENABLE;
@@ -247,6 +247,6 @@ void __makeFilterConfig(CAN_FilterTypeDef* sFilterConfig){
 }
 
 
-void __trigger(TIM_HandleTypeDef* htim){
+void __host_trigger(TIM_HandleTypeDef* htim){
 	//printf("TEST\r\n");
 }
