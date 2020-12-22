@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['readme_2emd_176',['README.md',['../_motor_system-common_2_r_e_a_d_m_e_8md.html',1,'(Global Namespace)'],['../_r_e_a_d_m_e_8md.html',1,'(Global Namespace)']]],
   ['ready_177',['READY',['../namespacens_motor_system.html#aae299f675cde5a4644c17e38eef70407a996323c5b83c479c2e6a56d5f7d68e47',1,'nsMotorSystem']]],
   ['recive_5fbegin_178',['recive_begin',['../classns_motor_system_1_1ns_host_1_1_motor_system.html#a890ccd2a2b7a40c74a4b74ec42dd09b5',1,'nsMotorSystem::nsHost::MotorSystem']]],
   ['recive_5fcurrent_179',['recive_current',['../classns_motor_system_1_1ns_host_1_1_motor_system.html#a064d9f9acf06ce8d416f4659915678a2',1,'nsMotorSystem::nsHost::MotorSystem']]],

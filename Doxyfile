@@ -954,7 +954,8 @@ EXCLUDE_PATTERNS       = */Drivers/* \
                          */Docs/* \
                          */wiki/* \
                          */stm32f3xx* \
-                         */system_stm*
+                         */system_stm* \
+                         */README.md
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
@@ -991,7 +992,7 @@ EXAMPLE_RECURSIVE      = NO
 # that contain images that are to be included in the documentation (see the
 # \image command).
 
-IMAGE_PATH             =
+IMAGE_PATH             = ./docs-src/image
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
