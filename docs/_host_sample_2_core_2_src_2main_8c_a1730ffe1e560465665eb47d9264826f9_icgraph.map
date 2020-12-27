@@ -1,0 +1,16 @@
+<map id="Error_Handler" name="Error_Handler">
+<area shape="rect" id="node1" title="This function is executed in case of error occurrence." alt="" coords="339,259,440,285"/>
+<area shape="rect" id="node2" href="$_host_sample_2_core_2_src_2main_8c.html#aa025a12d45f60c7d0eae249e61f0c7f9" title=" " alt="" coords="169,5,226,32"/>
+<area shape="rect" id="node3" href="$_host_sample_2_core_2_src_2main_8c.html#abcdf9b59049eccbc87d54042f9235b1a" title=" " alt="" coords="104,56,291,83"/>
+<area shape="rect" id="node4" href="$_motor_system_2_core_2_src_2main_8c.html#aaa163e37853e6fc971474824d9f655ca" title="ADC1 Initialization Function." alt="" coords="143,107,251,133"/>
+<area shape="rect" id="node6" href="$_host_sample_2_core_2_src_2main_8c.html#a0f1dd94da70ff01c04d9aa1bcbbe4eee" title="CAN Initialization Function." alt="" coords="146,411,249,437"/>
+<area shape="rect" id="node8" href="$_motor_system_2_core_2_src_2main_8c.html#ac9b592ca8ef85a0898f4e6540524aa38" title="TIM15 Initialization Function." alt="" coords="142,157,253,184"/>
+<area shape="rect" id="node9" href="$_motor_system_2_core_2_src_2main_8c.html#a4e631056d61a1546185e9bf5a2edd463" title="TIM16 Initialization Function." alt="" coords="142,208,253,235"/>
+<area shape="rect" id="node10" href="$_motor_system_2_core_2_src_2main_8c.html#a8e1d412799a648fd7b11ac4fb4a4a6a3" title="TIM17 Initialization Function." alt="" coords="142,259,253,285"/>
+<area shape="rect" id="node11" href="$_motor_system_2_core_2_src_2main_8c.html#a1d1beb7da60021ee1adbca294f28ba88" title="TIM1 Initialization Function." alt="" coords="145,309,249,336"/>
+<area shape="rect" id="node12" href="$_motor_system_2_core_2_src_2main_8c.html#af952250b2d49718b385e14a76fa7c1b8" title="TIM2 Initialization Function." alt="" coords="145,360,249,387"/>
+<area shape="rect" id="node13" href="$_host_sample_2_core_2_src_2main_8c.html#a6db1014d713f6f5c0f52a13299ee0733" title="USART2 Initialization Function." alt="" coords="113,461,282,488"/>
+<area shape="rect" id="node14" href="$_host_sample_2_core_2_src_2main_8c.html#a70af21c671abfcc773614a9a4f63d920" title="System Clock Configuration." alt="" coords="126,512,269,539"/>
+<area shape="rect" id="node5" href="$_motor_system_2_core_2_src_2main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="The application entry point." alt="" coords="5,233,56,260"/>
+<area shape="rect" id="node7" href="$_host_sample_2_core_2_src_2main_8c.html#a840291bc02cba5474a4cb46a9b9566fe" title="The application entry point." alt="" coords="5,461,56,488"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="nsMotorSystem::nsNode::MotorSystem::controlTick" name="nsMotorSystem::nsNode::MotorSystem::controlTick">
+<area shape="rect" id="node1" title="制御を行う周期処理" alt="" coords="5,104,180,145"/>
+<area shape="rect" id="node2" href="$classns_motor_system_1_1ns_node_1_1_motor_system.html#a19792bd4460f2aa5c313f630ecd27278" title="（内部用）voltage設定関数" alt="" coords="228,39,415,80"/>
+<area shape="rect" id="node6" href="$class_p_i_d_1_1_p_i_d_controler.html#a562989b55786da7b31dff1be59512d9e" title="制御量の計算メソッド" alt="" coords="256,104,387,145"/>
+<area shape="rect" id="node7" href="$classns_motor_system_1_1ns_node_1_1low_motor_system.html#a76a5a6a4488b6957127dd42298fd9ca6" title="速度取得関数" alt="" coords="228,169,415,211"/>
+<area shape="rect" id="node3" href="$classns_motor_system_1_1ns_node_1_1_motor_system.html#a9d9ef8b6f730f28fee1079ff1f87a76f" title="（内部用）duty設定関数" alt="" coords="463,39,632,80"/>
+<area shape="rect" id="node4" href="$classns_motor_system_1_1ns_node_1_1low_motor_system.html#ac6e04b2d7ae56cfffd68ff193c0df203" title="回転方向設定関数" alt="" coords="680,5,880,47"/>
+<area shape="rect" id="node5" href="$classns_motor_system_1_1ns_node_1_1low_motor_system.html#ad3f0f4e15f476dbecf4977eaf5143772" title="Duty設定関数" alt="" coords="693,71,867,112"/>
+</map>

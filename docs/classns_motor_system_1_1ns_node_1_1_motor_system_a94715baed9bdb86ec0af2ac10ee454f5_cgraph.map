@@ -1,0 +1,5 @@
+<map id="nsMotorSystem::nsNode::MotorSystem::sendErrorMessage" name="nsMotorSystem::nsNode::MotorSystem::sendErrorMessage">
+<area shape="rect" id="node1" title="エラーが発生したときにhostにエラーメッセージを送るための関数" alt="" coords="5,39,224,80"/>
+<area shape="rect" id="node2" href="$classns_motor_system_1_1ns_node_1_1low_motor_system.html#a354ef08ef71ec023f50c2b268b9039cd" title="ID取得関数" alt="" coords="296,5,460,47"/>
+<area shape="rect" id="node3" href="$classns_motor_system_1_1ns_node_1_1low_motor_system.html#a912632ac2a1b9407cd7c3e2ad7ac726a" title="CANメッセージ送信関数" alt="" coords="272,71,484,112"/>
+</map>
