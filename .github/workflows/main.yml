@@ -33,6 +33,8 @@ jobs:
       - name: commit docs
         run: |
           sed -i -e '/\<docs\>/d' .gitignore
+          pwd
+          ls -al
           touch　docs/.nojekyll
       
       - name: deploy git pages
