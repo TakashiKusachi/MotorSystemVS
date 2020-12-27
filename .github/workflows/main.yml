@@ -29,6 +29,7 @@ jobs:
           pwd
           ls -al
           mkdir docs
+          ls -al
           touch　docs/.nojekyll
 
       - name: Doxygen Build
