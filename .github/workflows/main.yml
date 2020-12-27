@@ -23,17 +23,23 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      - name: mk docs and enable stage docs
+        run: |
+          sed -i -e '/\<docs\>/d' .gitignore
+          pwd
+          ls -al
+          mkdir -p docs
+          ls -al
+          echo "" > docs/.nojekyll
+          #touch　docs/.nojekyll
+          
+
       - name: Doxygen Build
         uses: mattnotmitt/doxygen-action@v1.2.1
         with:
           doxyfile-path: Doxyfile
           working-directory: ./
           enable-latex: false
-      
-      - name: commit docs
-        run: |
-          sed -i -e '/\<docs\>/d' .gitignore
-          touch　./docs/.nojekyll
       
       - name: deploy git pages
         uses: peaceiris/actions-gh-pages@v3
