@@ -43,6 +43,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: dev-docs
           publish_dir: . 
+          allow_empty_commit: true
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
