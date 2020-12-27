@@ -32,8 +32,8 @@ jobs:
       
       - name: commit docs
         run: |
-          git config --local user.email "aisiars@gmail.com"
-          git config --local user.name ${{github.actor}}
+          git config --local user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --local user.name 'github-actions[bot]'
           git add -f docs/
           git commit -v -m "update docs with github action" 
       
@@ -43,7 +43,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: dev-docs
           publish_dir: . 
-          allow_empty_commit: true
+          force_orphan: true
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
