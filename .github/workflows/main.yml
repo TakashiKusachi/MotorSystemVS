@@ -28,7 +28,7 @@ jobs:
           sed -i -e '/\<docs\>/d' .gitignore
           pwd
           ls -al
-          mkdir docs
+          mkdir -p docs
           ls -al
           touch　docs/.nojekyll
 
