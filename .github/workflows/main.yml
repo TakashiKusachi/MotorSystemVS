@@ -33,7 +33,7 @@ jobs:
       - name: commit docs
         run: |
           sed -i -e '/\<docs\>/d' .gitignore
-          touch　./docs/.nojekyll
+          touch　docs/.nojekyll
       
       - name: deploy git pages
         uses: peaceiris/actions-gh-pages@v3
