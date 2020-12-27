@@ -32,6 +32,8 @@ jobs:
       
       - name: commit docs
         run: |
+          git config --local user.email "aisiars@gmail.com"
+          git config --local user.name ${{github.actor}}
           git add -f docs/
           git commit -v -m "update docs with github action" 
       
